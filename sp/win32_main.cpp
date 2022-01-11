@@ -1,5 +1,7 @@
 #include <Windows.h>
+
 #include "sp_common.h"
+#include "sp_log.h"
 
 #define GAME_WINDOW_CLASS_NAME "GameWindowClass"
 #define GAME_WINDOW_TITLE "Game"
@@ -59,6 +61,8 @@ void win32_create(HINSTANCE hInstance)
             NULL, NULL, hInstance,
             NULL);
 
+    sp_log_info("Initialised game");
+
     ShowWindow(state.hwnd, SW_SHOWDEFAULT);
 }
 
@@ -78,6 +82,7 @@ void win32_update()
 void win32_destroy()
 {
     DestroyWindow(state.hwnd);
+    sp_log_info("Terminated game");
 }
 
 int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR cmdLine, i32 cmdShow)
