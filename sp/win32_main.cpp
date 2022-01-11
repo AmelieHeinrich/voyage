@@ -2,6 +2,7 @@
 
 #include "sp_common.h"
 #include "sp_log.h"
+#include "sp_video.h"
 
 #define GAME_WINDOW_CLASS_NAME "GameWindowClass"
 #define GAME_WINDOW_TITLE "Game"
@@ -34,6 +35,12 @@ LRESULT CALLBACK wnd_proc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
         break;
     }
 
+    case WM_SIZE:
+    {
+        if (sp_video_data.swap_chain)
+            sp_video_resize(LOWORD(lparam), HIWORD(lparam));
+    }
+
     default:
         return DefWindowProc(hwnd, msg, wparam, lparam);
     }
@@ -64,23 +71,23 @@ void win32_create(HINSTANCE hInstance)
     sp_log_info("Initialised game");
 
     ShowWindow(state.hwnd, SW_SHOWDEFAULT);
+
+    sp_video_init(state.hwnd);
 }
 
 void win32_update()
 {
-    while (state.running)
+    MSG msg;
+    while (PeekMessageA(&msg, state.hwnd, 0, 0, PM_REMOVE))
     {
-        MSG msg;
-        while (PeekMessageA(&msg, state.hwnd, 0, 0, PM_REMOVE))
-        {
-            TranslateMessage(&msg);
-            DispatchMessageA(&msg);
-        }
+        TranslateMessage(&msg);
+        DispatchMessageA(&msg);
     }
 }
 
 void win32_destroy()
 {
+    sp_video_shutdown();
     DestroyWindow(state.hwnd);
     sp_log_info("Terminated game");
 }
@@ -88,6 +95,10 @@ void win32_destroy()
 int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR cmdLine, i32 cmdShow)
 {
     win32_create(hInstance);
-    win32_update();
+    while (state.running)
+    {
+        win32_update();
+        sp_video_present(1);
+    }
     win32_destroy();
 }
