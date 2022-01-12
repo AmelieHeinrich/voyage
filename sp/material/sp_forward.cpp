@@ -17,10 +17,13 @@ void sp_forward_update(sp_forward* forward, sp_render_update update)
     sp_shader_bind(&forward->forward_shader);
     for (i32 i = 0; i < update.drawable_count; i++)
     {
-        sp_drawable drawable = update.drawables[i];
-        sp_material_bind(&drawable.material);
-        sp_buffer_bind_vb(&drawable.vertex_buffer);
-        sp_buffer_bind_ib(&drawable.index_buffer);
-        sp_video_draw_indexed(drawable.index_count, 0);
+        sp_model model= update.drawables[i];
+        for (i32 j = 0; j < model.meshes.size(); j++)
+        {
+            sp_mesh mesh = model.meshes[j];
+            sp_buffer_bind_vb(&mesh.vertex_buffer);
+            sp_buffer_bind_ib(&mesh.index_buffer);
+            sp_video_draw_indexed(mesh.index_count, 0);
+        }
     }
 }
