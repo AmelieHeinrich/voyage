@@ -5,8 +5,7 @@
 
 #include "sp_common.h"
 #include "sp_log.h"
-#include "video/sp_video.h"
-#include "video/sp_shader.h"
+#include "sp_game.h"
 
 #define GAME_WINDOW_CLASS_NAME "GameWindowClass"
 #define GAME_WINDOW_TITLE "Game"
@@ -20,9 +19,6 @@ struct game_state
     HWND hwnd;
     u32 width, height;
     bool running;
-
-    //
-    sp_shader forward_shader;
 };
 
 game_state state;
@@ -45,8 +41,8 @@ LRESULT CALLBACK wnd_proc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
     case WM_SIZE:
     {
-        if (sp_video_data.swap_chain)
-            sp_video_resize(LOWORD(lparam), HIWORD(lparam));
+        sp_game_resize(LOWORD(lparam), HIWORD(lparam));
+        break;
     }
 
     default:
@@ -76,12 +72,8 @@ void win32_create(HINSTANCE hInstance)
             NULL, NULL, hInstance,
             NULL);
 
-    sp_log_info("Initialised game");
-
     ShowWindow(state.hwnd, SW_SHOWDEFAULT);
-
-    sp_video_init(state.hwnd);
-    sp_shader_init(&state.forward_shader, "data/shaders/forward/forward_vs.hlsl", "data/shaders/forward/forward_ps.hlsl");
+    sp_game_init(state.hwnd);
 }
 
 void win32_update()
@@ -96,8 +88,7 @@ void win32_update()
 
 void win32_destroy()
 {
-    sp_shader_free(&state.forward_shader);
-    sp_video_shutdown();
+    sp_game_shutdown();
     DestroyWindow(state.hwnd);
     sp_log_info("Terminated game");
 }
@@ -108,8 +99,7 @@ int main()
     while (state.running)
     {
         win32_update();
-        sp_video_begin();
-        sp_video_present(1);
+        sp_game_update();   
     }
     win32_destroy();
 }
