@@ -29,3 +29,4 @@ void sp_video_begin();
 void sp_video_resize(u32 width, u32 height);
 void sp_video_present(bool vsync);
 void sp_video_shutdown();
+void sp_video_draw(i32 count, i32 start);

@@ -106,3 +106,8 @@ void sp_video_shutdown()
     safe_release(sp_video_data.dxgi);
     safe_release(sp_video_data.device);
 }
+
+void sp_video_draw(i32 count, i32 start)
+{
+    sp_video_data.device_ctx->Draw(count, start);
+}
