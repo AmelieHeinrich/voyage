@@ -8,6 +8,7 @@ struct sp_forward
 {
     sp_shader forward_shader;
     sp_texture rtv;
+    sp_sampler texture_sampler;
 };
 
 void sp_forward_init(sp_forward* forward);

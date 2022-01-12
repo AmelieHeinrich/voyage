@@ -7,6 +7,7 @@ void sp_forward_init(sp_forward* forward)
     sp_texture_init(&forward->rtv, sp_video_data.width, sp_video_data.height, DXGI_FORMAT_R8G8B8A8_UNORM, sp_texture_bind::rtv);
     sp_texture_init_rtv(&forward->rtv);
     sp_texture_init_dsv(&forward->rtv, DXGI_FORMAT_D32_FLOAT);
+    sp_sampler_init(&forward->texture_sampler, sp_texture_address::mirror);
 
     sp_shader_init(&forward->forward_shader, "data/shaders/forward/forward_vs.hlsl", "data/shaders/forward/forward_ps.hlsl");
 }
@@ -14,6 +15,7 @@ void sp_forward_init(sp_forward* forward)
 void sp_forward_free(sp_forward* forward)
 {
     sp_shader_free(&forward->forward_shader);
+    sp_sampler_free(&forward->texture_sampler);
     sp_texture_free(&forward->rtv);
 }
 
@@ -23,6 +25,7 @@ void sp_forward_update(sp_forward* forward, sp_render_update update)
 
     sp_texture_bind_rtv(&forward->rtv, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
     sp_shader_bind(&forward->forward_shader);
+    sp_sampler_bind(&forward->texture_sampler, 0, sp_uniform_bind::pixel);
     sp_buffer_bind_cb(&update.scene_buffer, 1, sp_uniform_bind::vertex);
     for (i32 i = 0; i < update.drawable_count; i++)
     {

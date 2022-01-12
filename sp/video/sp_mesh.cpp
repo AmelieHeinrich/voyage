@@ -18,22 +18,24 @@ sp_mesh sp_process_mesh(sp_model* mod, aiMesh* mesh, const aiScene* scene)
     {
         sp_vertex vertex;
 
-        vertex.px = mesh->mVertices[i].x;
-        vertex.py = mesh->mVertices[i].y;
-        vertex.pz = mesh->mVertices[i].z;
-
-        if (mesh->mTextureCoords[0])
-        {
-            vertex.tx = mesh->mTextureCoords[0][i].x;
-            vertex.ty = mesh->mTextureCoords[0][i].y;
-        }
+        vertex.position.x = mesh->mVertices[i].x;
+        vertex.position.y = mesh->mVertices[i].y;
+        vertex.position.z = mesh->mVertices[i].z;
 
         if (mesh->HasNormals())
         {
-            vertex.nx = mesh->mNormals[i].x;
-            vertex.ny = mesh->mNormals[i].y;
-            vertex.nz = mesh->mNormals[i].z;
+            vertex.normal.x = mesh->mNormals[i].x;
+            vertex.normal.y = mesh->mNormals[i].y;
+            vertex.normal.z = mesh->mNormals[i].z;
         }
+
+        if (mesh->mTextureCoords[0])
+        {
+            vertex.uv.x = mesh->mTextureCoords[0][i].x;
+            vertex.uv.y = mesh->mTextureCoords[0][i].y;
+        }
+        else
+            vertex.uv = glm::vec2(0.0f);
 
         vertices.push_back(vertex);
     }
@@ -50,7 +52,7 @@ sp_mesh sp_process_mesh(sp_model* mod, aiMesh* mesh, const aiScene* scene)
     sp_buffer_create(&out.index_buffer, indices.size() * sizeof(u32), 0, sp_buffer_usage::index);
     sp_buffer_set_data(&out.index_buffer, indices.data());
 
-    out.vertex_count = (i32)mesh->mNumVertices;
+    out.vertex_count = (i32)vertices.size();
     out.index_count = (i32)indices.size();
 
     aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
@@ -107,7 +109,7 @@ void sp_process_node(sp_model* out, aiNode* node, const aiScene* scene)
 void sp_model_load(sp_model* mod, const std::string& path)
 {
     Assimp::Importer importer;
-    const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_CalcTangentSpace);
+    const aiScene* scene = importer.ReadFile(path, aiProcess_FlipWindingOrder | aiProcess_FlipUVs);
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
     {
         sp_log_err("Failed to load model with path %s", path.c_str());

@@ -8,6 +8,56 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image/stb_image.h>
 
+void sp_sampler_init(sp_sampler* sampler, sp_texture_address address)
+{
+    sampler->address = address;
+
+    D3D11_SAMPLER_DESC desc{};
+    desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+    desc.AddressU = (D3D11_TEXTURE_ADDRESS_MODE)address;
+    desc.AddressV = desc.AddressU;
+    desc.AddressW = desc.AddressV;
+    desc.MipLODBias = 0.0f;
+    desc.MaxAnisotropy = 1;
+    desc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+    desc.MinLOD = 0;
+    desc.MaxLOD = D3D11_FLOAT32_MAX;
+
+    HRESULT res = sp_video_data.device->CreateSamplerState(&desc, &sampler->ss);
+    if (FAILED(res))
+        sp_log_crit("Failed to create sampler state");
+}
+
+void sp_sampler_free(sp_sampler* sampler)
+{
+    safe_release(sampler->ss);
+}
+
+void sp_sampler_bind(sp_sampler* sampler, i32 binding, sp_uniform_bind bind)
+{
+    switch (bind)
+    {
+    case sp_uniform_bind::vertex:
+        sp_video_data.device_ctx->VSSetSamplers(binding, 1, &sampler->ss);
+        break;
+    case sp_uniform_bind::pixel:
+        sp_video_data.device_ctx->PSSetSamplers(binding, 1, &sampler->ss);
+        break;
+    case sp_uniform_bind::compute:
+        sp_video_data.device_ctx->CSSetSamplers(binding, 1, &sampler->ss);
+        break;
+    case sp_uniform_bind::geometry:
+        sp_video_data.device_ctx->GSSetSamplers(binding, 1, &sampler->ss);
+        break;
+    case sp_uniform_bind::hull:
+        sp_video_data.device_ctx->HSSetSamplers(binding, 1, &sampler->ss);
+        break;
+    case sp_uniform_bind::domain:
+        sp_video_data.device_ctx->DSSetSamplers(binding, 1, &sampler->ss);
+        break;
+    }
+}
+
 void sp_texture_init(sp_texture* tex, i32 width, i32 height, DXGI_FORMAT format, sp_texture_bind bind)
 {
     tex->width = width;
@@ -33,6 +83,7 @@ void sp_texture_init(sp_texture* tex, i32 width, i32 height, DXGI_FORMAT format,
 void sp_texture_load(sp_texture* tex, const char* path)
 {
     i32 channels = 0;
+    stbi_set_flip_vertically_on_load(1);
     u8* buf = stbi_load(path, &tex->width, &tex->height, &channels, STBI_rgb_alpha);
     if (!buf)
         sp_log_crit("Failed to load texture file with path %s", path);

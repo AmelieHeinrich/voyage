@@ -7,9 +7,9 @@
 
 struct sp_vertex
 {
-    f32 px, py, pz;
-    f32 nx, ny, nz;
-    f32 tx, ty;
+    glm::vec3 position;
+    glm::vec3 normal;
+    glm::vec2 uv;
 };
 
 struct sp_mesh

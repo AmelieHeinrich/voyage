@@ -14,6 +14,20 @@ enum class sp_texture_bind
     uav = D3D11_BIND_UNORDERED_ACCESS
 };
 
+enum class sp_texture_address
+{
+    wrap = D3D11_TEXTURE_ADDRESS_WRAP,
+    mirror = D3D11_TEXTURE_ADDRESS_MIRROR,
+    clamp = D3D11_TEXTURE_ADDRESS_CLAMP,
+    border = D3D11_TEXTURE_ADDRESS_BORDER
+};  
+
+struct sp_sampler
+{
+    ID3D11SamplerState* ss;
+    sp_texture_address address;
+};
+
 struct sp_texture
 {
     ID3D11Texture2D* texture;
@@ -30,6 +44,10 @@ struct sp_texture
     ID3D11ShaderResourceView* srv;
     ID3D11UnorderedAccessView* uav;
 };
+
+void sp_sampler_init(sp_sampler* sampler, sp_texture_address address);
+void sp_sampler_free(sp_sampler* sampler);
+void sp_sampler_bind(sp_sampler* sampler, i32 binding, sp_uniform_bind bind);
 
 void sp_texture_init(sp_texture* tex, i32 width, i32 height, DXGI_FORMAT format, sp_texture_bind bind);
 void sp_texture_load(sp_texture* tex, const char* path);

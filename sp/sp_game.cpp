@@ -29,7 +29,7 @@ void sp_game_init(HWND hwnd)
     sp_video_init(hwnd);
     sp_render_flow_init(&game_state.render_flow);
 
-    sp_model_load(&game_state.cube, "data/models/DamagedHelmet.gltf");
+    sp_model_load(&game_state.cube, "data/models/helmet/DamagedHelmet.gltf");
 
     game_state.render_flow.update.drawables[0].model = game_state.cube;
     game_state.render_flow.update.drawables[0].transform = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
@@ -39,7 +39,7 @@ void sp_game_init(HWND hwnd)
     game_state.render_flow.update.drawable_count++;
 
     sp_material_info mat_info{};
-    mat_info.ccw = true;
+    mat_info.ccw = false;
     mat_info.cull_mode = sp_cull_mode::back;
     mat_info.fill_mode = sp_fill_mode::fill;
     mat_info.depth_op = sp_comp_op::less;
