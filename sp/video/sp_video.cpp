@@ -65,7 +65,7 @@ void sp_video_resize(u32 width, u32 height)
         DXGI_SWAP_CHAIN_DESC swap_desc{};
 		swap_desc.BufferDesc.Width = width;
 		swap_desc.BufferDesc.Height = height;
-		swap_desc.BufferDesc.RefreshRate.Numerator = 60;
+		swap_desc.BufferDesc.RefreshRate.Numerator = 0;
 		swap_desc.BufferDesc.RefreshRate.Denominator = 1;
 		swap_desc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 		swap_desc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;

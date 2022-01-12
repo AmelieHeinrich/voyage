@@ -2,11 +2,15 @@
 
 #include "video/sp_video.h"
 #include "video/sp_shader.h"
+#include "video/sp_buffer.h"
+#include "material/sp_material.h"
 #include "sp_log.h"
 
 struct sp_game
 {
     sp_shader forward_shader;
+    sp_buffer vertex_buffer;
+    sp_material tri_mat;
 };
 
 sp_game game_state;
@@ -17,6 +21,22 @@ void sp_game_init(HWND hwnd)
 
     sp_video_init(hwnd);
     sp_shader_init(&game_state.forward_shader, "data/shaders/forward/forward_vs.hlsl", "data/shaders/forward/forward_ps.hlsl");
+    sp_shader_bind(&game_state.forward_shader);
+
+    float vertices[] = {
+        -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
+         0.0f,  0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
+         0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f
+    };
+    i64 vertex_stride = sizeof(float) * 6;
+    sp_buffer_create(&game_state.vertex_buffer, sizeof(vertices), vertex_stride, sp_buffer_usage::vertex);
+    sp_buffer_set_data(&game_state.vertex_buffer, vertices);
+
+    sp_material_info mat_info;
+    mat_info.cull_mode = sp_cull_mode::back;
+    mat_info.fill_mode = sp_fill_mode::fill;
+    mat_info.ccw = false;
+    sp_material_create(&game_state.tri_mat, mat_info);
 }
 
 void sp_game_shutdown()
@@ -28,6 +48,10 @@ void sp_game_shutdown()
 void sp_game_update()
 {
     sp_video_begin();
+    sp_shader_bind(&game_state.forward_shader);
+    sp_material_bind(&game_state.tri_mat);
+    sp_buffer_bind_vb(&game_state.vertex_buffer);
+    sp_video_data.device_ctx->Draw(3, 0);
     sp_video_present(1);
 }
 
