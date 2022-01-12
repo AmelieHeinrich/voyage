@@ -14,7 +14,7 @@ if %debug%==true (
     set debugFlags = -DGAME_DEBUG
     set entryPoint = /link /subsystem:CONSOLE
     set link_path=/link /LIBPATH:%rootDir%/bin/dbg    
-    xcopy "bin/dbg/assimp-vc140-mt.dll" "build" /f
+    xcopy "bin/dbg/assimp-vc140-mt.dll" "build" 
 ) else (
     echo Compiling in release mode.
     echo.
@@ -22,7 +22,7 @@ if %debug%==true (
     set debugFlags=-DNDEBUG -O2 -Oi -fp:fast
     set entryPoint = /link /subsystem:WINDOWS
     set link_path=/link /LIBPATH:%rootDir%/bin/rls
-    xcopy bin/rls/assimp-vc140-mt.dll build /f
+    xcopy "bin/rls/assimp-vc140-mt.dll" "build"
 )
 
 set output=game

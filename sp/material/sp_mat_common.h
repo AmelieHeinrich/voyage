@@ -21,4 +21,10 @@ struct sp_render_update
 {
     sp_entity drawables[SP_MAX_DRAWABLES];
     i32 drawable_count;
+
+    struct {
+        glm::mat4 projection;
+        glm::mat4 view;
+    } camera;
+    sp_buffer scene_buffer;
 };

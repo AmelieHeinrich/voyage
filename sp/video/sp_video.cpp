@@ -18,7 +18,7 @@ void sp_video_init(HWND hwnd)
     HRESULT result = 0;
     for (i32 i = 0; i < ARRAYSIZE(driver_types);)
     {
-        result = D3D11CreateDevice(NULL, driver_types[i], NULL, NULL, levels, 1, D3D11_SDK_VERSION, &sp_video_data.device, &sp_video_data.level, &sp_video_data.device_ctx);
+        result = D3D11CreateDevice(NULL, driver_types[i], NULL, D3D11_CREATE_DEVICE_DEBUG, levels, 1, D3D11_SDK_VERSION, &sp_video_data.device, &sp_video_data.level, &sp_video_data.device_ctx);
 
         if (SUCCEEDED(result))
             break;
@@ -49,10 +49,8 @@ void sp_video_begin()
     viewport.Width = (FLOAT)sp_video_data.width;
     viewport.Height = (FLOAT)sp_video_data.height;
 
-    f32 clear_color[4] = { 0.1f, 0.2f, 0.3f, 1.0f };
     sp_video_data.device_ctx->RSSetViewports(1, &viewport);
     sp_video_data.device_ctx->OMSetRenderTargets(1, &sp_video_data.swap_chain_rtv, NULL);
-    sp_video_data.device_ctx->ClearRenderTargetView(sp_video_data.swap_chain_rtv, clear_color);
 }
 
 void sp_video_resize(u32 width, u32 height)
@@ -65,13 +63,13 @@ void sp_video_resize(u32 width, u32 height)
         DXGI_SWAP_CHAIN_DESC swap_desc{};
 		swap_desc.BufferDesc.Width = width;
 		swap_desc.BufferDesc.Height = height;
-		swap_desc.BufferDesc.RefreshRate.Numerator = 0;
+		swap_desc.BufferDesc.RefreshRate.Numerator = 60;
 		swap_desc.BufferDesc.RefreshRate.Denominator = 1;
 		swap_desc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 		swap_desc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 		swap_desc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
-		swap_desc.SampleDesc.Count = 1;		// Not used in D3D12
-		swap_desc.SampleDesc.Quality = 0;	// Not used in D3D12
+		swap_desc.SampleDesc.Count = 1;		
+		swap_desc.SampleDesc.Quality = 0;	
 		swap_desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 		swap_desc.BufferCount = 1;
 		swap_desc.OutputWindow = sp_video_data.hwnd;
