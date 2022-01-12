@@ -4,7 +4,7 @@
 
 void sp_forward_init(sp_forward* forward)
 {
-    sp_texture_init(&forward->rtv, sp_video_data.width, sp_video_data.height, DXGI_FORMAT_R8G8B8A8_UNORM, sp_texture_bind::rtv | sp_texture_bind::srv);
+    sp_texture_init(&forward->rtv, sp_video_data.width, sp_video_data.height, DXGI_FORMAT_R16G16B16A16_FLOAT, sp_texture_bind::rtv | sp_texture_bind::srv);
     sp_texture_init_rtv(&forward->rtv);
     sp_texture_init_srv(&forward->rtv);
     sp_texture_init_dsv(&forward->rtv, DXGI_FORMAT_D32_FLOAT);
