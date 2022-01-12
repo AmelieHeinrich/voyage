@@ -12,3 +12,4 @@ void sp_render_flow_init(sp_render_flow* flow);
 void sp_render_flow_free(sp_render_flow* flow);
 void sp_render_flow_update(sp_render_flow* flow);
 void sp_render_flow_render(sp_render_flow* flow);
+void sp_render_flow_resize(sp_render_flow* flow);

@@ -29,3 +29,8 @@ void sp_render_flow_render(sp_render_flow* flow)
 {
     sp_video_data.device_ctx->CopyResource(sp_video_data.swap_chain_buffer, flow->forward.rtv.texture);
 }
+
+void sp_render_flow_resize(sp_render_flow* flow)
+{
+    sp_forward_resize(&flow->forward);
+}
