@@ -1,7 +1,5 @@
 #include "sp_video.h"
-#include "sp_log.h"
-
-#define safe_release(ptr) if (ptr) ptr->Release();
+#include "../sp_log.h"
 
 const D3D_DRIVER_TYPE driver_types[] =
 {
@@ -42,6 +40,21 @@ void sp_video_init(HWND hwnd)
     sp_video_resize(sp_video_data.width, sp_video_data.height);
 }
 
+void sp_video_begin()
+{
+    D3D11_VIEWPORT viewport;
+    ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
+    viewport.TopLeftX = 0;
+    viewport.TopLeftY = 0;
+    viewport.Width = (FLOAT)sp_video_data.width;
+    viewport.Height = (FLOAT)sp_video_data.height;
+
+    f32 clear_color[4] = { 0.1f, 0.2f, 0.3f, 1.0f };
+    sp_video_data.device_ctx->RSSetViewports(1, &viewport);
+    sp_video_data.device_ctx->OMSetRenderTargets(1, &sp_video_data.swap_chain_rtv, NULL);
+    sp_video_data.device_ctx->ClearRenderTargetView(sp_video_data.swap_chain_rtv, clear_color);
+}
+
 void sp_video_resize(u32 width, u32 height)
 {
     sp_video_data.width = width;
@@ -74,7 +87,7 @@ void sp_video_resize(u32 width, u32 height)
     safe_release(sp_video_data.swap_chain_buffer);
 
     sp_video_data.swap_chain->ResizeBuffers(1, width, height, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
-    sp_video_data.swap_chain->GetBuffer(1, IID_PPV_ARGS(&sp_video_data.swap_chain_buffer));
+    sp_video_data.swap_chain->GetBuffer(0, IID_PPV_ARGS(&sp_video_data.swap_chain_buffer));
     sp_video_data.device->CreateRenderTargetView(sp_video_data.swap_chain_buffer, NULL, &sp_video_data.swap_chain_rtv);
 }
 

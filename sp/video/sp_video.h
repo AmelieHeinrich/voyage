@@ -1,6 +1,6 @@
 #pragma once
 
-#include "sp_common.h"
+#include "../sp_common.h"
 
 #include <d3d11.h>
 #include <dxgi.h>
@@ -25,6 +25,7 @@ struct sp_video
 extern sp_video sp_video_data;
 
 void sp_video_init(HWND hwnd);
+void sp_video_begin();
 void sp_video_resize(u32 width, u32 height);
 void sp_video_present(bool vsync);
 void sp_video_shutdown();

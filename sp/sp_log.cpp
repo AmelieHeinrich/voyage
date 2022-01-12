@@ -82,5 +82,5 @@ void sp_log_crit(const char* fmt, ...)
     va_end(vl);
 
     sp_console_output(LOG_RED, buf);
-    assert(false);
+    assert(false && buf);
 }

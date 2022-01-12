@@ -1,5 +1,7 @@
 #pragma once
 
+#define safe_release(ptr) if (ptr) ptr->Release();
+
 typedef char i8;
 typedef unsigned char u8;
 typedef short i16;
