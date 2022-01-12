@@ -11,7 +11,8 @@ struct sp_drawable
 {
     sp_material material;
     sp_buffer vertex_buffer;
-    i32 vertex_count;
+    sp_buffer index_buffer;
+    i32 index_count;
 };
 
 struct sp_render_update

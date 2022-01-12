@@ -111,3 +111,8 @@ void sp_video_draw(i32 count, i32 start)
 {
     sp_video_data.device_ctx->Draw(count, start);
 }
+
+void sp_video_draw_indexed(i32 count, i32 start)
+{
+    sp_video_data.device_ctx->DrawIndexed(count, start, 0);
+}

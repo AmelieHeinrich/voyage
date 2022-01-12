@@ -20,6 +20,7 @@ void sp_forward_update(sp_forward* forward, sp_render_update update)
         sp_drawable drawable = update.drawables[i];
         sp_material_bind(&drawable.material);
         sp_buffer_bind_vb(&drawable.vertex_buffer);
-        sp_video_draw(drawable.vertex_count, 0);
+        sp_buffer_bind_ib(&drawable.index_buffer);
+        sp_video_draw_indexed(drawable.index_count, 0);
     }
 }
