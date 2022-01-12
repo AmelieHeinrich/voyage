@@ -1,21 +1,29 @@
 struct VertexIn
 {
     float3 position: POSITION;
-    float3 color: COLOR;
+    float3 normal: NORMAL;
+    float2 texcoord: TEXCOORD;
 };
 
 struct VertexOut
 {
     float4 position: SV_POSITION;
-    float3 color: COLOR;
+    float3 normal: NORMAL;
+    float2 texcoord: TEXCOORD;
+};
+
+cbuffer ObjectTransform : register(b0)
+{
+    row_major float4x4 Model;
 };
 
 VertexOut main(VertexIn input)
 {
     VertexOut output = (VertexOut)0;
     
-    output.position = float4(input.position, 1.0);
-    output.color = input.color;
+    output.position = mul(float4(input.position, 1.0), Model);
+    output.normal = input.normal;
+    output.texcoord = input.texcoord;
 
     return output;
 }

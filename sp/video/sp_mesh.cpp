@@ -41,7 +41,7 @@ sp_mesh sp_process_mesh(aiMesh* mesh, const aiScene* scene)
     {
         aiFace face = mesh->mFaces[i];
         for (u32 j = 0; j < face.mNumIndices; j++)
-            indices.push_back(face.mIndices[i]);
+            indices.push_back(face.mIndices[j]);
     }
 
     sp_buffer_create(&out.vertex_buffer, vertices.size() * sizeof(sp_vertex), sizeof(sp_vertex), sp_buffer_usage::vertex);
@@ -49,7 +49,7 @@ sp_mesh sp_process_mesh(aiMesh* mesh, const aiScene* scene)
     sp_buffer_create(&out.index_buffer, indices.size() * sizeof(u32), 0, sp_buffer_usage::index);
     sp_buffer_set_data(&out.index_buffer, indices.data());
 
-    out.vertex_count = (i32)vertices.size();
+    out.vertex_count = (i32)mesh->mNumVertices;
     out.index_count = (i32)indices.size();
 
     return out;
