@@ -8,6 +8,7 @@
 #include "material/sp_material.h"
 #include "material/sp_render_flow.h"
 #include "player/sp_debug_camera.h"
+#include "audio/sp_audio.h"
 #include "sp_log.h"
 
 #include <glm/gtc/matrix_transform.hpp>
@@ -26,6 +27,7 @@ sp_game game_state;
 void sp_game_init(HWND hwnd)
 {
     sp_timer_init();
+    sp_audio_init();
     sp_video_init(hwnd);
     sp_render_flow_init(&game_state.render_flow);
 
@@ -56,6 +58,7 @@ void sp_game_shutdown()
     sp_buffer_free(&game_state.render_flow.update.drawables[0].gpu_transform);
     sp_render_flow_free(&game_state.render_flow);
     sp_video_shutdown();
+    sp_audio_free();
 }
 
 void sp_game_update()
