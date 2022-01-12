@@ -51,7 +51,7 @@ void sp_game_init(HWND hwnd)
     game_state.render_flow.update.material_count++;
 
     sp_debug_camera_init(&game_state.cam);
-    sp_audio_clip_play(&game_state.music);
+    //sp_audio_clip_play(&game_state.music);
 
     sp_log_info("Initialised game");
 }

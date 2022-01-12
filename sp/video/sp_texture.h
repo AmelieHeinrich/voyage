@@ -6,7 +6,7 @@
 
 #include <glm/glm.hpp>
 
-enum class sp_texture_bind
+enum sp_texture_bind 
 {
     rtv = D3D11_BIND_RENDER_TARGET,
     dsv = D3D11_BIND_DEPTH_STENCIL,
@@ -36,7 +36,6 @@ struct sp_texture
     DXGI_FORMAT format;
     DXGI_FORMAT depth_format;
     i32 width, height;
-    sp_texture_bind bind;
 
     //
     ID3D11RenderTargetView* rtv;
@@ -49,7 +48,7 @@ void sp_sampler_init(sp_sampler* sampler, sp_texture_address address);
 void sp_sampler_free(sp_sampler* sampler);
 void sp_sampler_bind(sp_sampler* sampler, i32 binding, sp_uniform_bind bind);
 
-void sp_texture_init(sp_texture* tex, i32 width, i32 height, DXGI_FORMAT format, sp_texture_bind bind);
+void sp_texture_init(sp_texture* tex, i32 width, i32 height, DXGI_FORMAT format, u32 bind);
 void sp_texture_load(sp_texture* tex, const char* path);
 void sp_texture_free(sp_texture* tex);
 void sp_texture_init_rtv(sp_texture* tex);

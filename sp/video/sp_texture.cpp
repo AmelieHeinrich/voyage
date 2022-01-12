@@ -58,11 +58,10 @@ void sp_sampler_bind(sp_sampler* sampler, i32 binding, sp_uniform_bind bind)
     }
 }
 
-void sp_texture_init(sp_texture* tex, i32 width, i32 height, DXGI_FORMAT format, sp_texture_bind bind)
+void sp_texture_init(sp_texture* tex, i32 width, i32 height, DXGI_FORMAT format, u32 bind)
 {
     tex->width = width;
     tex->height = height;
-    tex->bind = bind;
     tex->format = format;
 
     D3D11_TEXTURE2D_DESC desc{};
@@ -88,7 +87,6 @@ void sp_texture_load(sp_texture* tex, const char* path)
     if (!buf)
         sp_log_crit("Failed to load texture file with path %s", path);
 
-    tex->bind = sp_texture_bind::srv;
     tex->format = DXGI_FORMAT_R8G8B8A8_UNORM;
 
     D3D11_TEXTURE2D_DESC desc{};
@@ -96,7 +94,7 @@ void sp_texture_load(sp_texture* tex, const char* path)
     desc.Height = tex->height;
     desc.Format = tex->format;
     desc.ArraySize = 1;
-    desc.BindFlags = (D3D11_BIND_FLAG)tex->bind;
+    desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
     desc.Usage = D3D11_USAGE_DEFAULT;
     desc.SampleDesc.Count = 1;
     desc.MipLevels = 1;

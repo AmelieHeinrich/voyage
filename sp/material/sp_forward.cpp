@@ -4,8 +4,9 @@
 
 void sp_forward_init(sp_forward* forward)
 {
-    sp_texture_init(&forward->rtv, sp_video_data.width, sp_video_data.height, DXGI_FORMAT_R8G8B8A8_UNORM, sp_texture_bind::rtv);
+    sp_texture_init(&forward->rtv, sp_video_data.width, sp_video_data.height, DXGI_FORMAT_R8G8B8A8_UNORM, sp_texture_bind::rtv | sp_texture_bind::srv);
     sp_texture_init_rtv(&forward->rtv);
+    sp_texture_init_srv(&forward->rtv);
     sp_texture_init_dsv(&forward->rtv, DXGI_FORMAT_D32_FLOAT);
     sp_sampler_init(&forward->texture_sampler, sp_texture_address::mirror);
 
@@ -46,7 +47,8 @@ void sp_forward_update(sp_forward* forward, sp_render_update update)
 void sp_forward_resize(sp_forward* forward)
 {
     sp_texture_free(&forward->rtv);
-    sp_texture_init(&forward->rtv, sp_video_data.width, sp_video_data.height, DXGI_FORMAT_R8G8B8A8_UNORM, sp_texture_bind::rtv);
+    sp_texture_init(&forward->rtv, sp_video_data.width, sp_video_data.height, DXGI_FORMAT_R8G8B8A8_UNORM, sp_texture_bind::rtv | sp_texture_bind::srv);
     sp_texture_init_rtv(&forward->rtv);
+    sp_texture_init_srv(&forward->rtv);
     sp_texture_init_dsv(&forward->rtv, DXGI_FORMAT_D32_FLOAT);
 }

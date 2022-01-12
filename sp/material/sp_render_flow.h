@@ -1,11 +1,13 @@
 #pragma once
 
 #include "sp_forward.h"
+#include "sp_fxaa.h"
 
 struct sp_render_flow
 {
     sp_render_update update;
     sp_forward forward;
+    sp_fxaa fxaa;
 };
 
 void sp_render_flow_init(sp_render_flow* flow);
