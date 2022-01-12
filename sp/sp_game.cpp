@@ -18,6 +18,7 @@ struct sp_game
     sp_render_flow render_flow;
     sp_debug_camera cam;
     sp_model cube;
+    sp_audio_clip music;
 
     f32 last_frame;
 };
@@ -28,6 +29,7 @@ void sp_game_init(HWND hwnd)
 {
     sp_timer_init();
     sp_audio_init();
+    sp_audio_clip_load_wav(&game_state.music, "data/audio/music.wav");
     sp_video_init(hwnd);
     sp_render_flow_init(&game_state.render_flow);
 
@@ -49,6 +51,7 @@ void sp_game_init(HWND hwnd)
     game_state.render_flow.update.material_count++;
 
     sp_debug_camera_init(&game_state.cam);
+    sp_audio_clip_play(&game_state.music);
 
     sp_log_info("Initialised game");
 }
@@ -58,11 +61,14 @@ void sp_game_shutdown()
     sp_buffer_free(&game_state.render_flow.update.drawables[0].gpu_transform);
     sp_render_flow_free(&game_state.render_flow);
     sp_video_shutdown();
+    sp_audio_clip_free(&game_state.music);
     sp_audio_free();
 }
 
 void sp_game_update()
 {
+    sp_audio_update();
+
     f32 time = sp_timer_get();
     f32 dt = time - game_state.last_frame;
     game_state.last_frame = time;

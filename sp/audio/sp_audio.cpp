@@ -3,11 +3,14 @@
 #define MINIAUDIO_IMPLEMENTATION
 #include <miniaudio/miniaudio.h>
 
+#define DR_WAV_IMPLEMENTATION
+#include <dr_libs/dr_wav.h>
+
 #include <assert.h>
 #include <vector>
 #include "../sp_log.h"
 
-#define SP_SAMPLE_FORMAT ma_format_f32
+#define SP_SAMPLE_FORMAT ma_format_s16
 #define SP_CHANNEL_COUNT 2
 #define SP_SAMPLE_RATE 48000
 #define SP_MAX_AUDIO_CLIPS 1024
@@ -23,54 +26,20 @@ struct sp_audio_ctx
 
 sp_audio_ctx ctx;
 
-u32 sp_read_and_mix(ma_decoder* decoder, float* out, u32 frame_count) {
-	float temp[4096];
-	u32 temp_cap = (sizeof(temp) / sizeof(float)) / SP_CHANNEL_COUNT;
-	u32 read = 0;
-
-	while (read < frame_count) {
-		u32 remaining = frame_count - read;
-		u32 to_read = temp_cap;
-
-		if (to_read > remaining) {
-			to_read = remaining;
-		}
-
-		u32 frames_read = (u32)ma_decoder_read_pcm_frames(decoder, temp, to_read);
-		if (frames_read == 0) {
-			break;
-		}
-
-		for (u32 i = 0; i < frames_read * SP_CHANNEL_COUNT; i++) {
-			out[read * SP_CHANNEL_COUNT + i] += temp[i];
-		}
-
-		read += frames_read;
-
-		if (frames_read < to_read) {
-			break;
-		}
-	}
-
-	return read;
-}
-
-void sp_data_callback(ma_device* device, void* out, const void* in, u32 frame_count)
+void sp_data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 frameCount)
 {
-    assert(device->playback.format == SP_SAMPLE_FORMAT);
-
-    for (u32 i = 0; i < ctx.clip_count; i++) {
-		sp_audio_clip* clip = ctx.clips[i];
-
-		if (clip->playing) {
-			u32 read = sp_read_and_mix(&clip->decoder, (float*)out, frame_count);
-			if (read < frame_count) {
-				clip->playing = false;
-			}
-		}
+    /* Assuming format is always s16 for now. */
+    for (i32 i = 0; i < ctx.clip_count; i++) {
+		if (pDevice->playback.format == ma_format_s16) {
+       		drwav_read_pcm_frames_s16(&ctx.clips[i]->wav, frameCount, (drwav_int16*)pOutput);
+    	} else if (pDevice->playback.format == ma_format_f32) {
+    	    drwav_read_pcm_frames_f32(&ctx.clips[i]->wav, frameCount, (float*)pOutput);
+    	} else {
+    	    /* Unsupported format. */
+    	}
 	}
 
-	(void)in;
+    (void)pInput;
 }
 
 void sp_audio_init()
@@ -106,17 +75,9 @@ void sp_audio_update()
 	}
 }
 
-void sp_audio_clip_init(sp_audio_clip* clip, u8* data, u64 size)
+void sp_audio_clip_load_wav(sp_audio_clip* clip, const char* path)
 {
-	clip->data = data;
-	clip->data_size = size;
-
-	clip->decoder_config = ma_decoder_config_init(SP_SAMPLE_FORMAT, SP_CHANNEL_COUNT, SP_SAMPLE_RATE);
-	ma_result r = ma_decoder_init_memory(clip->data, clip->data_size, &clip->decoder_config, &clip->decoder);
-	if (r != MA_SUCCESS) {
-		sp_log_crit("Failed to create audio clip.");
-		ma_decoder_uninit(&clip->decoder);
-	}
+	drwav_init_file(&clip->wav, path, NULL);
 }
 
 void sp_audio_clip_free(sp_audio_clip* clip)
@@ -127,7 +88,7 @@ void sp_audio_clip_free(sp_audio_clip* clip)
 
 	ma_decoder_uninit(&clip->decoder);
 
-	free(clip->data);
+	drwav_uninit(&clip->wav);
     free(clip);
 }
 
