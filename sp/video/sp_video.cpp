@@ -48,6 +48,8 @@ void sp_video_begin()
     viewport.TopLeftY = 0;
     viewport.Width = (FLOAT)sp_video_data.width;
     viewport.Height = (FLOAT)sp_video_data.height;
+    viewport.MinDepth = 0.0f;
+    viewport.MaxDepth = 1.0f;
 
     sp_video_data.device_ctx->RSSetViewports(1, &viewport);
     sp_video_data.device_ctx->OMSetRenderTargets(1, &sp_video_data.swap_chain_rtv, NULL);
@@ -73,7 +75,7 @@ void sp_video_resize(u32 width, u32 height)
 		swap_desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 		swap_desc.BufferCount = 1;
 		swap_desc.OutputWindow = sp_video_data.hwnd;
-		swap_desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+		swap_desc.Flags = 0;
 		swap_desc.Windowed = TRUE;
 
         HRESULT result = sp_video_data.factory->CreateSwapChain(sp_video_data.device, &swap_desc, &sp_video_data.swap_chain);

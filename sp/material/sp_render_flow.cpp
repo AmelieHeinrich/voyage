@@ -19,6 +19,8 @@ void sp_render_flow_update(sp_render_flow* flow)
     D3D11_VIEWPORT viewport{};
     viewport.Width = (FLOAT)sp_video_data.width;
     viewport.Height = (FLOAT)sp_video_data.height;
+    viewport.MinDepth = 0.0f;
+    viewport.MaxDepth = 1.0f;
     sp_video_data.device_ctx->RSSetViewports(1, &viewport);
 
     sp_buffer_set_data(&flow->update.scene_buffer, &flow->update.camera);

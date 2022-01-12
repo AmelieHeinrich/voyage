@@ -3,10 +3,11 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include <assimp/pbrmaterial.h>
 
 #include "../sp_log.h"
 
-sp_mesh sp_process_mesh(aiMesh* mesh, const aiScene* scene)
+sp_mesh sp_process_mesh(sp_model* mod, aiMesh* mesh, const aiScene* scene)
 {
     sp_mesh out;
 
@@ -52,6 +53,41 @@ sp_mesh sp_process_mesh(aiMesh* mesh, const aiScene* scene)
     out.vertex_count = (i32)mesh->mNumVertices;
     out.index_count = (i32)indices.size();
 
+    aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+    // Albedo
+    {
+        aiString str;
+        material->GetTexture(aiTextureType_DIFFUSE, 0, &str);
+        if (str.length)
+        {
+            std::string tex_path = mod->directory + '/' + str.C_Str();
+            sp_texture_load(&out.albedo_texture, tex_path.c_str());
+            sp_texture_init_srv(&out.albedo_texture);
+        }
+    }
+    // Metallic Roughness
+    {
+        aiString str;
+        material->GetTexture(aiTextureType_UNKNOWN, 0, &str);
+        if (str.length)
+        {
+            std::string tex_path = mod->directory + '/' + str.C_Str();
+            sp_texture_load(&out.metallic_roughness_texture, tex_path.c_str());
+            sp_texture_init_srv(&out.metallic_roughness_texture);
+        }
+    }
+    // Normal
+    {
+        aiString str;
+        material->GetTexture(aiTextureType_NORMALS, 0, &str);
+        if (str.length)
+        {
+            std::string tex_path = mod->directory + '/' + str.C_Str();
+            sp_texture_load(&out.normal_texture, tex_path.c_str());
+            sp_texture_init_srv(&out.normal_texture);
+        }
+    }
+
     return out;
 }
 
@@ -60,7 +96,7 @@ void sp_process_node(sp_model* out, aiNode* node, const aiScene* scene)
     for(unsigned int i = 0; i < node->mNumMeshes; i++)
     {
         aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-        out->meshes.push_back(sp_process_mesh(mesh, scene));
+        out->meshes.push_back(sp_process_mesh(out, mesh, scene));
     }
     for(unsigned int i = 0; i < node->mNumChildren; i++)
     {
@@ -68,12 +104,16 @@ void sp_process_node(sp_model* out, aiNode* node, const aiScene* scene)
     }
 }
 
-void sp_model_load(sp_model* mod, char* path)
+void sp_model_load(sp_model* mod, const std::string& path)
 {
     Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_CalcTangentSpace);
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
-        sp_log_crit("Failed to load model with path %s", path);
+    {
+        sp_log_err("Failed to load model with path %s", path.c_str());
+        sp_log_crit("%s", importer.GetErrorString());
+    }
+    mod->directory = path.substr(0, path.find_last_of('/'));
     sp_process_node(mod, scene->mRootNode, scene);
 }
 
@@ -81,6 +121,9 @@ void sp_model_free(sp_model* mod)
 {
     for (sp_mesh mesh : mod->meshes)
     {
+        sp_texture_free(&mesh.normal_texture);
+        sp_texture_free(&mesh.metallic_roughness_texture);
+        sp_texture_free(&mesh.albedo_texture);
         sp_buffer_free(&mesh.index_buffer);
         sp_buffer_free(&mesh.vertex_buffer);
     }

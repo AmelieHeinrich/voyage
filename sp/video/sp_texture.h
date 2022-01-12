@@ -32,6 +32,7 @@ struct sp_texture
 };
 
 void sp_texture_init(sp_texture* tex, i32 width, i32 height, DXGI_FORMAT format, sp_texture_bind bind);
+void sp_texture_load(sp_texture* tex, const char* path);
 void sp_texture_free(sp_texture* tex);
 void sp_texture_init_rtv(sp_texture* tex);
 void sp_texture_init_dsv(sp_texture* tex, DXGI_FORMAT depth_format);

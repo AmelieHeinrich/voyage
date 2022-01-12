@@ -5,6 +5,9 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image/stb_image.h>
+
 void sp_texture_init(sp_texture* tex, i32 width, i32 height, DXGI_FORMAT format, sp_texture_bind bind)
 {
     tex->width = width;
@@ -25,6 +28,38 @@ void sp_texture_init(sp_texture* tex, i32 width, i32 height, DXGI_FORMAT format,
     HRESULT res = sp_video_data.device->CreateTexture2D(&desc, NULL, &tex->texture);
     if (FAILED(res))
         sp_log_crit("Failed to create D3D11 image");
+}
+
+void sp_texture_load(sp_texture* tex, const char* path)
+{
+    i32 channels = 0;
+    u8* buf = stbi_load(path, &tex->width, &tex->height, &channels, STBI_rgb_alpha);
+    if (!buf)
+        sp_log_crit("Failed to load texture file with path %s", path);
+
+    tex->bind = sp_texture_bind::srv;
+    tex->format = DXGI_FORMAT_R8G8B8A8_UNORM;
+
+    D3D11_TEXTURE2D_DESC desc{};
+    desc.Width = tex->width;
+    desc.Height = tex->height;
+    desc.Format = tex->format;
+    desc.ArraySize = 1;
+    desc.BindFlags = (D3D11_BIND_FLAG)tex->bind;
+    desc.Usage = D3D11_USAGE_DEFAULT;
+    desc.SampleDesc.Count = 1;
+    desc.MipLevels = 1;
+
+    D3D11_SUBRESOURCE_DATA subresource{};
+    subresource.pSysMem = buf;
+    subresource.SysMemPitch = 4 * tex->width;
+    subresource.SysMemSlicePitch = 4 * tex->width * tex->height;
+
+    HRESULT res = sp_video_data.device->CreateTexture2D(&desc, &subresource, &tex->texture);
+    if (FAILED(res))
+        sp_log_crit("Failed to create D3D11 image");
+
+    stbi_image_free(buf);
 }
 
 void sp_texture_free(sp_texture* tex)
@@ -61,13 +96,8 @@ void sp_texture_init_dsv(sp_texture* tex, DXGI_FORMAT depth_format)
     HRESULT res = sp_video_data.device->CreateTexture2D(&desc, NULL, &tex->depth_texture);
     if (FAILED(res))
         sp_log_crit("Failed to create D3D11 image");
-
-    D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc = {};
-	depthStencilViewDesc.Format = depth_format;
-	depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-	depthStencilViewDesc.Texture2D.MipSlice = 0;
-
-    res = sp_video_data.device->CreateDepthStencilView(tex->depth_texture, &depthStencilViewDesc, &tex->dsv);
+        
+    res = sp_video_data.device->CreateDepthStencilView(tex->depth_texture, NULL, &tex->dsv);
     if (FAILED(res))
         sp_log_crit("Failed to create depth stencil view");
 }
@@ -102,7 +132,7 @@ void sp_texture_bind_rtv(sp_texture* tex, glm::vec4 clear_color)
     sp_video_data.device_ctx->OMSetRenderTargets(1, &tex->rtv, tex->dsv);
     sp_video_data.device_ctx->ClearRenderTargetView(tex->rtv, glm::value_ptr(clear_color));
     if (tex->dsv)
-        sp_video_data.device_ctx->ClearDepthStencilView(tex->dsv, D3D11_CLEAR_DEPTH, 1.0f, 0);
+        sp_video_data.device_ctx->ClearDepthStencilView(tex->dsv, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 
 void sp_texture_bind_srv(sp_texture* tex, i32 binding, sp_uniform_bind bind)

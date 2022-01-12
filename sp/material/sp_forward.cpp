@@ -21,16 +21,18 @@ void sp_forward_update(sp_forward* forward, sp_render_update update)
 {
     sp_video_data.device_ctx->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-    sp_texture_bind_rtv(&forward->rtv, glm::vec4(1.0f, 0.0f, 1.0f, 1.0f));
+    sp_texture_bind_rtv(&forward->rtv, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
     sp_shader_bind(&forward->forward_shader);
     sp_buffer_bind_cb(&update.scene_buffer, 1, sp_uniform_bind::vertex);
     for (i32 i = 0; i < update.drawable_count; i++)
     {
         sp_entity entity = update.drawables[i];
+        sp_material_bind(&update.materials[entity.mat_index]);
         sp_buffer_bind_cb(&entity.gpu_transform, 0, sp_uniform_bind::vertex);
         for (i32 j = 0; j < entity.model.meshes.size(); j++)
         {
             sp_mesh mesh = entity.model.meshes[j];
+            sp_texture_bind_srv(&mesh.albedo_texture, 0, sp_uniform_bind::pixel);
             sp_buffer_bind_vb(&mesh.vertex_buffer);
             sp_buffer_bind_ib(&mesh.index_buffer);
             sp_video_draw_indexed(mesh.index_count, 0);

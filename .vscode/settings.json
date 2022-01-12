@@ -1,5 +1,9 @@
 {
     "C_Cpp.default.includePath": [
         "third_party"
-    ]
+    ],
+    "files.associations": {
+        "chrono": "cpp",
+        "format": "cpp"
+    }
 }
