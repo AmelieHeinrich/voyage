@@ -4,12 +4,14 @@
 
 struct sp_shader
 {
-    ID3D11VertexShader*   vs = NULL;
-    ID3D11PixelShader*    ps = NULL;
-    ID3D11ComputeShader*  cs = NULL;
-    ID3D11GeometryShader* gs = NULL;
-    ID3D11DomainShader*   ds = NULL;
-    ID3D11HullShader*     hs = NULL;
+    ID3D11VertexShader* vs;
+    ID3D11PixelShader* ps;
+    ID3D11ComputeShader* cs;
+    ID3D11GeometryShader* gs;
+    ID3D11DomainShader* ds;
+    ID3D11HullShader* hs;
+
+    ID3D11InputLayout* input_layout;
 };
 
 void sp_shader_init(sp_shader* shader, const char* v = NULL, const char* p = NULL, const char* c = NULL, const char* g = NULL, const char* d = NULL, const char* h = NULL);

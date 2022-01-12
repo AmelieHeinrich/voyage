@@ -1,7 +1,4 @@
 #include <Windows.h>
-#include <stdio.h>
-#include <fcntl.h>
-#include <io.h>
 
 #include "sp_common.h"
 #include "sp_log.h"

@@ -6,6 +6,7 @@
 
 #include <d3dcompiler.h>
 #include <string>
+#include <vector>
 
 ID3DBlob* sp_compile_blob(std::string source, const char* profile)
 {
@@ -40,6 +41,69 @@ void sp_shader_init(sp_shader* shader, const char* v, const char* p, const char*
     if (hs) sp_video_data.device->CreateHullShader(hs->GetBufferPointer(), hs->GetBufferSize(), NULL, &shader->hs);
     if (ds) sp_video_data.device->CreateDomainShader(ds->GetBufferPointer(), ds->GetBufferSize(), NULL, &shader->ds);
 
+    // Create input layout
+    if (vs)
+    {
+        ID3D11ShaderReflection* vs_reflect = NULL;
+        HRESULT result = D3DReflect(vs->GetBufferPointer(), vs->GetBufferSize(), IID_PPV_ARGS(&vs_reflect));
+        if (FAILED(result))
+            sp_log_crit("Failed to reflect vertex shader");
+        
+        D3D11_SHADER_DESC shader_desc;
+        vs_reflect->GetDesc(&shader_desc);
+
+        std::vector<D3D11_INPUT_ELEMENT_DESC> inputLayoutDesc;
+        for (u32 i = 0; i < shader_desc.InputParameters; i++)
+        {
+            D3D11_SIGNATURE_PARAMETER_DESC paramDesc;
+            vs_reflect->GetInputParameterDesc(i, &paramDesc);
+    
+            // fill out input element desc
+            D3D11_INPUT_ELEMENT_DESC elementDesc;
+            elementDesc.SemanticName = paramDesc.SemanticName;
+            elementDesc.SemanticIndex = paramDesc.SemanticIndex;
+            elementDesc.InputSlot = 0;
+            elementDesc.AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
+            elementDesc.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+            elementDesc.InstanceDataStepRate = 0;   
+    
+            // determine DXGI format
+            if ( paramDesc.Mask == 1 )
+            {
+                if ( paramDesc.ComponentType == D3D_REGISTER_COMPONENT_UINT32 ) elementDesc.Format = DXGI_FORMAT_R32_UINT;
+                else if ( paramDesc.ComponentType == D3D_REGISTER_COMPONENT_SINT32 ) elementDesc.Format = DXGI_FORMAT_R32_SINT;
+                else if ( paramDesc.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32 ) elementDesc.Format = DXGI_FORMAT_R32_FLOAT;
+            }
+            else if ( paramDesc.Mask <= 3 )
+            {
+                if ( paramDesc.ComponentType == D3D_REGISTER_COMPONENT_UINT32 ) elementDesc.Format = DXGI_FORMAT_R32G32_UINT;
+                else if ( paramDesc.ComponentType == D3D_REGISTER_COMPONENT_SINT32 ) elementDesc.Format = DXGI_FORMAT_R32G32_SINT;
+                else if ( paramDesc.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32 ) elementDesc.Format = DXGI_FORMAT_R32G32_FLOAT;
+            }
+            else if ( paramDesc.Mask <= 7 )
+            {
+                if ( paramDesc.ComponentType == D3D_REGISTER_COMPONENT_UINT32 ) elementDesc.Format = DXGI_FORMAT_R32G32B32_UINT;
+                else if ( paramDesc.ComponentType == D3D_REGISTER_COMPONENT_SINT32 ) elementDesc.Format = DXGI_FORMAT_R32G32B32_SINT;
+                else if ( paramDesc.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32 ) elementDesc.Format = DXGI_FORMAT_R32G32B32_FLOAT;
+            }
+            else if ( paramDesc.Mask <= 15 )
+            {
+                if ( paramDesc.ComponentType == D3D_REGISTER_COMPONENT_UINT32 ) elementDesc.Format = DXGI_FORMAT_R32G32B32A32_UINT;
+                else if ( paramDesc.ComponentType == D3D_REGISTER_COMPONENT_SINT32 ) elementDesc.Format = DXGI_FORMAT_R32G32B32A32_SINT;
+                else if ( paramDesc.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32 ) elementDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+            }
+    
+            // Save element desc
+            inputLayoutDesc.push_back(elementDesc);
+        }       
+
+        result = sp_video_data.device->CreateInputLayout(&inputLayoutDesc[0], (UINT)inputLayoutDesc.size(), vs->GetBufferPointer(), vs->GetBufferSize(), &shader->input_layout);
+        if (FAILED(result))
+            sp_log_crit("Failed to create input layout from vertex shader reflection");
+
+        safe_release(vs_reflect);
+    }
+
     safe_release(hs);
     safe_release(ds);
     safe_release(gs);
@@ -50,6 +114,7 @@ void sp_shader_init(sp_shader* shader, const char* v, const char* p, const char*
 
 void sp_shader_free(sp_shader* shader)
 {
+    safe_release(shader->input_layout);
     safe_release(shader->ds);
     safe_release(shader->hs);
     safe_release(shader->gs);
@@ -66,4 +131,5 @@ void sp_shader_bind(sp_shader* shader)
     if (shader->gs) sp_video_data.device_ctx->GSSetShader(shader->gs, NULL, 0);
     if (shader->hs) sp_video_data.device_ctx->HSSetShader(shader->hs, NULL, 0);
     if (shader->ds) sp_video_data.device_ctx->DSSetShader(shader->ds, NULL, 0);
+    if (shader->input_layout) sp_video_data.device_ctx->IASetInputLayout(shader->input_layout);
 }

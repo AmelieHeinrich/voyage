@@ -11,7 +11,7 @@ if %debug%==true (
     echo Compiling in debug mode.
     echo.
 
-    set debugFlags=-DGAME_DEBUG
+    set debugFlags = -DGAME_DEBUG
     set entryPoint = /link /subsystem:CONSOLE
 ) else (
     echo Compiling in release mode.
