@@ -6,8 +6,6 @@ void sp_render_flow_init(sp_render_flow* flow)
 {
     sp_forward_init(&flow->forward);
     sp_fxaa_init(&flow->fxaa);
-
-    sp_buffer_create(&flow->update.scene_buffer, sizeof(glm::mat4) * 2, 0, sp_buffer_usage::uniform);
 }   
 
 void sp_render_flow_free(sp_render_flow* flow)
@@ -16,7 +14,7 @@ void sp_render_flow_free(sp_render_flow* flow)
     sp_forward_free(&flow->forward);
 }
 
-void sp_render_flow_update(sp_render_flow* flow)
+void sp_render_flow_update(sp_render_flow* flow, sp_scene* scene)
 {
     D3D11_VIEWPORT viewport{};
     viewport.Width = (FLOAT)sp_video_data.width;
@@ -25,8 +23,7 @@ void sp_render_flow_update(sp_render_flow* flow)
     viewport.MaxDepth = 1.0f;
     sp_video_data.device_ctx->RSSetViewports(1, &viewport);
 
-    sp_buffer_set_data(&flow->update.scene_buffer, &flow->update.camera);
-    sp_forward_update(&flow->forward, flow->update);
+    sp_forward_update(&flow->forward, scene);
     sp_fxaa_update(&flow->fxaa, &flow->forward.rtv);
 }
 

@@ -3,6 +3,8 @@
 #include "../video/sp_video.h"
 #include "../sp_log.h"
 
+#include <time.h>
+
 D3D11_CULL_MODE sp_get_cull_mode(sp_cull_mode mode)
 {
     switch (mode)
@@ -34,6 +36,7 @@ D3D11_FILL_MODE sp_get_fill_mode(sp_fill_mode mode)
 void sp_material_create(sp_material* mat, sp_material_info mat_info)
 {
     mat->mat_info = mat_info;
+    mat->id = (u32)rand();
 
     D3D11_RASTERIZER_DESC desc{};
     desc.CullMode = sp_get_cull_mode(mat_info.cull_mode);

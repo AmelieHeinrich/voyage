@@ -2,6 +2,7 @@
 
 #include "../video/sp_texture.h"
 #include "../video/sp_shader.h"
+#include "../entity/sp_scene.h"
 #include "sp_material.h"
 
 struct sp_fxaa_params

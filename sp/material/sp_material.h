@@ -1,6 +1,7 @@
 #pragma once
 
 #include <d3d11.h>
+#include "../sp_common.h"
 
 enum class sp_fill_mode
 {
@@ -40,6 +41,7 @@ struct sp_material
     ID3D11RasterizerState* rs_state;
     ID3D11DepthStencilState* ds_state;
     sp_material_info mat_info;
+    u32 id;
 };
 
 void sp_material_create(sp_material* mat, sp_material_info mat_info);

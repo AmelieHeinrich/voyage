@@ -28,12 +28,12 @@ if %debug%==true (
 set output=game
 set flags=-nologo -FC -Zi -WX -W4
 set disabledWarnings=-wd4100 -wd4201 -wd4018 -wd4099 -wd4189 -wd4505 -wd4530 -wd4840
-set source= %rootDir%/sp/*.cpp %rootDir%/sp/video/*.cpp %rootDir%/sp/material/*.cpp %rootDir%/sp/player/*.cpp %rootDir%/sp/audio/*.cpp
+set source= %rootDir%/sp/*.cpp %rootDir%/sp/video/*.cpp %rootDir%/sp/material/*.cpp %rootDir%/sp/player/*.cpp %rootDir%/sp/audio/*.cpp %rootDir%/sp/script/*.cpp %rootDir%/sp/entity/*.cpp
 set links=user32.lib d3d11.lib d3dcompiler.lib dxgi.lib assimp-vc143-mtd.lib
 set includeDirs= -I%rootDir%/third_party
 
 pushd build
-cl %disabledWarnings% %includeDirs% %debugFlags% %flags% -Fe%output% %source% %links% %entryPoint% %link_path% 
+cl %disabledWarnings% %includeDirs% %debugFlags% %flags% -Fe%output% %source% /std:c++latest %links% %entryPoint% %link_path%
 popd
 
 echo.

@@ -20,22 +20,22 @@ void sp_forward_free(sp_forward* forward)
     sp_texture_free(&forward->rtv);
 }
 
-void sp_forward_update(sp_forward* forward, sp_render_update update)
+void sp_forward_update(sp_forward* forward, sp_scene* scene)
 {
     sp_video_data.device_ctx->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
     sp_texture_bind_rtv(&forward->rtv, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
     sp_shader_bind(&forward->forward_shader);
     sp_sampler_bind(&forward->texture_sampler, 0, sp_uniform_bind::pixel);
-    sp_buffer_bind_cb(&update.scene_buffer, 1, sp_uniform_bind::vertex);
-    for (i32 i = 0; i < update.drawable_count; i++)
+    sp_buffer_bind_cb(&scene->camera_buffer, 1, sp_uniform_bind::vertex);
+    for (auto scene_entity : scene->entities)
     {
-        sp_entity entity = update.drawables[i];
-        sp_material_bind(&update.materials[entity.mat_index]);
+        sp_entity entity = scene_entity.second;
+        sp_material_bind(&scene->materials[entity.material_index]);
         sp_buffer_bind_cb(&entity.gpu_transform, 0, sp_uniform_bind::vertex);
-        for (i32 j = 0; j < entity.model.meshes.size(); j++)
+        for (i32 j = 0; j < entity.render_model.meshes.size(); j++)
         {
-            sp_mesh mesh = entity.model.meshes[j];
+            sp_mesh mesh = entity.render_model.meshes[j];
             sp_texture_bind_srv(&mesh.albedo_texture, 0, sp_uniform_bind::pixel);
             sp_buffer_bind_vb(&mesh.vertex_buffer);
             sp_buffer_bind_ib(&mesh.index_buffer);

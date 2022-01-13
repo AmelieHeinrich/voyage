@@ -9,16 +9,17 @@
 #include "material/sp_render_flow.h"
 #include "player/sp_debug_camera.h"
 #include "audio/sp_audio.h"
+#include "entity/sp_scene.h"
 #include "sp_log.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 
 struct sp_game
 {
+    sp_scene our_scene;
     sp_render_flow render_flow;
     sp_debug_camera cam;
-    sp_model cube;
-    sp_audio_clip music;
+    sp_entity helmet_entity;
 
     f32 last_frame;
 };
@@ -29,39 +30,35 @@ void sp_game_init(HWND hwnd)
 {
     sp_timer_init();
     sp_audio_init();
-    sp_audio_clip_load_wav(&game_state.music, "data/audio/music.wav");
     sp_video_init(hwnd);
+    sp_scene_init(&game_state.our_scene);
     sp_render_flow_init(&game_state.render_flow);
 
-    sp_model_load(&game_state.cube, "data/models/helmet/DamagedHelmet.gltf");
-
-    game_state.render_flow.update.drawables[0].model = game_state.cube;
-    game_state.render_flow.update.drawables[0].transform = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-    sp_buffer_create(&game_state.render_flow.update.drawables[0].gpu_transform, sizeof(glm::mat4), 0, sp_buffer_usage::uniform);
-    sp_buffer_set_data(&game_state.render_flow.update.drawables[0].gpu_transform, &game_state.render_flow.update.drawables[0].transform);
-    game_state.render_flow.update.drawables[0].mat_index = 0;
-    game_state.render_flow.update.drawable_count++;
-
+    //
     sp_material_info mat_info{};
     mat_info.ccw = false;
     mat_info.cull_mode = sp_cull_mode::back;
     mat_info.fill_mode = sp_fill_mode::fill;
     mat_info.depth_op = sp_comp_op::less;
-    sp_material_create(&game_state.render_flow.update.materials[0], mat_info);
-    game_state.render_flow.update.material_count++;
+    sp_scene_push_material(&game_state.our_scene, mat_info);
+
+    sp_entity_init(&game_state.helmet_entity, "Helmet");
+    sp_entity_load_mesh(&game_state.helmet_entity, "data/models/helmet/DamagedHelmet.gltf");
+    sp_entity_load_audio(&game_state.helmet_entity, "data/audio/music.wav");
+    sp_entity_set_rotation(&game_state.helmet_entity, 90.0f, 0.0f, 0.0f);
+    sp_entity_set_material_index(&game_state.helmet_entity, 0);
+    sp_scene_push_entity(&game_state.our_scene, game_state.helmet_entity);
 
     sp_debug_camera_init(&game_state.cam);
-    //sp_audio_clip_play(&game_state.music);
 
     sp_log_info("Initialised game");
 }
 
 void sp_game_shutdown()
 {
-    sp_buffer_free(&game_state.render_flow.update.drawables[0].gpu_transform);
+    sp_scene_free(&game_state.our_scene);
     sp_render_flow_free(&game_state.render_flow);
     sp_video_shutdown();
-    sp_audio_clip_free(&game_state.music);
     sp_audio_free();
 }
 
@@ -73,10 +70,11 @@ void sp_game_update()
     f32 dt = time - game_state.last_frame;
     game_state.last_frame = time;
 
-    game_state.render_flow.update.camera.projection = game_state.cam.projection;
-    game_state.render_flow.update.camera.view = game_state.cam.view;
+    game_state.our_scene.scene_camera.projection = game_state.cam.projection;
+    game_state.our_scene.scene_camera.view = game_state.cam.view;
 
-    sp_render_flow_update(&game_state.render_flow);
+    sp_scene_update(&game_state.our_scene);
+    sp_render_flow_update(&game_state.render_flow, &game_state.our_scene);
     sp_render_flow_render(&game_state.render_flow);
 
     sp_video_present(1);
