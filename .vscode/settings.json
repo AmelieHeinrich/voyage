@@ -4,6 +4,7 @@
     ],
     "files.associations": {
         "chrono": "cpp",
-        "format": "cpp"
+        "format": "cpp",
+        "utility": "cpp"
     }
 }

@@ -22,4 +22,7 @@ void sp_scene_push_entity(sp_scene* scene, sp_entity entity);
 void sp_scene_pop_entity(sp_scene* scene, sp_entity entity);
 void sp_scene_push_material(sp_scene* scene, sp_material_info mat);
 void sp_scene_pop_material(sp_scene* scene, i32 mat_index);
-void sp_scene_update(sp_scene* scene);
+
+void sp_scene_on_init(sp_scene* scene);
+void sp_scene_on_update(sp_scene* scene);
+void sp_scene_on_free(sp_scene* scene);

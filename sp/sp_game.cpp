@@ -10,6 +10,7 @@
 #include "player/sp_debug_camera.h"
 #include "audio/sp_audio.h"
 #include "entity/sp_scene.h"
+#include "script/sp_script_engine.h"
 #include "sp_log.h"
 
 #include <glm/gtc/matrix_transform.hpp>
@@ -31,6 +32,8 @@ void sp_game_init(HWND hwnd)
     sp_timer_init();
     sp_audio_init();
     sp_video_init(hwnd);
+    sp_script_engine_init();
+    sp_script_engine_register();
     sp_scene_init(&game_state.our_scene);
     sp_render_flow_init(&game_state.render_flow);
 
@@ -42,22 +45,24 @@ void sp_game_init(HWND hwnd)
     mat_info.depth_op = sp_comp_op::less;
     sp_scene_push_material(&game_state.our_scene, mat_info);
 
-    sp_entity_init(&game_state.helmet_entity, "Helmet");
-    sp_entity_load_mesh(&game_state.helmet_entity, "data/models/helmet/DamagedHelmet.gltf");
-    sp_entity_load_audio(&game_state.helmet_entity, "data/audio/music.wav");
-    sp_entity_set_rotation(&game_state.helmet_entity, 90.0f, 0.0f, 0.0f);
-    sp_entity_set_material_index(&game_state.helmet_entity, 0);
+    sp_entity_init(&game_state.helmet_entity, "helmet");
+    sp_script_engine_load_script(&game_state.helmet_entity, "data/scripts/helmet.lua");
     sp_scene_push_entity(&game_state.our_scene, game_state.helmet_entity);
 
     sp_debug_camera_init(&game_state.cam);
+
+    sp_scene_on_init(&game_state.our_scene);
 
     sp_log_info("Initialised game");
 }
 
 void sp_game_shutdown()
 {
+    sp_scene_on_free(&game_state.our_scene);
+
     sp_scene_free(&game_state.our_scene);
     sp_render_flow_free(&game_state.render_flow);
+    sp_script_engine_free();
     sp_video_shutdown();
     sp_audio_free();
 }
@@ -73,7 +78,7 @@ void sp_game_update()
     game_state.our_scene.scene_camera.projection = game_state.cam.projection;
     game_state.our_scene.scene_camera.view = game_state.cam.view;
 
-    sp_scene_update(&game_state.our_scene);
+    sp_scene_on_update(&game_state.our_scene);
     sp_render_flow_update(&game_state.render_flow, &game_state.our_scene);
     sp_render_flow_render(&game_state.render_flow);
 

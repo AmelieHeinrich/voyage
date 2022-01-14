@@ -89,7 +89,6 @@ void sp_audio_clip_free(sp_audio_clip* clip)
 	ma_decoder_uninit(&clip->decoder);
 
 	drwav_uninit(&clip->wav);
-    free(clip);
 }
 
 void sp_audio_clip_play(sp_audio_clip* clip)

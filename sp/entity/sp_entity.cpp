@@ -2,14 +2,15 @@
 
 #include <time.h>
 
-void sp_entity_init(sp_entity* out, std::string name)
+void sp_entity_init(sp_entity* out, const char* name)
 {
-    out->name = name;
+    out->name = (char*)name;
     out->id = rand();
     out->transform = glm::mat4(1.0f);
     out->position = glm::vec3(0.0f);
     out->scale = glm::vec3(1.0f);
     out->rotation = glm::vec3(0.0f);
+    out->scripted = 0;
 
     sp_buffer_create(&out->gpu_transform, sizeof(glm::mat4), 0, sp_buffer_usage::uniform);
 }
@@ -22,14 +23,14 @@ void sp_entity_free(sp_entity* entity)
     entity->id = -1;
 }
 
-void sp_entity_load_mesh(sp_entity* entity, std::string path)
+void sp_entity_load_mesh(sp_entity* entity, const char* path)
 {
     sp_model_load(&entity->render_model, path);
 }
 
-void sp_entity_load_audio(sp_entity* entity, std::string path)
+void sp_entity_load_audio(sp_entity* entity, const char* path)
 {
-    sp_audio_clip_load_wav(&entity->audio_clip, path.c_str());
+    sp_audio_clip_load_wav(&entity->audio_clip, path);
 }
 
 void sp_entity_set_material_index(sp_entity* entity, i32 material_index)
