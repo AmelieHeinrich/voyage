@@ -5,6 +5,8 @@
     "files.associations": {
         "chrono": "cpp",
         "format": "cpp",
-        "utility": "cpp"
+        "utility": "cpp",
+        "xhash": "cpp",
+        "list": "cpp"
     }
 }

@@ -35,12 +35,6 @@ void sp_script_engine_free()
 void sp_script_engine_register()
 {
     auto entity = script_engine.state->new_usertype<sp_entity>("sp_entity");
-    entity["load_mesh"] = &sp_entity::load_mesh;
-    entity["load_audio"] = &sp_entity::load_audio;
-    entity["set_material_index"] = &sp_entity::set_material_index;
-    entity["set_position"] = &sp_entity::set_position;
-    entity["set_scale"] = &sp_entity::set_scale;
-    entity["set_rotation"] = &sp_entity::set_rotation;
     entity["name"] = &sp_entity::name;
     entity["id"] = &sp_entity::id;
     entity["volume"] = &sp_entity::volume;
@@ -48,6 +42,9 @@ void sp_script_engine_register()
 
     script_engine.state->set_function("sp_entity_load_mesh", &sp_entity_load_mesh);
     script_engine.state->set_function("sp_entity_load_audio", &sp_entity_load_audio);
+    script_engine.state->set_function("sp_entity_play_audio", &sp_entity_play_audio);
+    script_engine.state->set_function("sp_entity_stop_audio", &sp_entity_stop_audio);
+    script_engine.state->set_function("sp_entity_loop_audio", &sp_entity_loop_audio);
     script_engine.state->set_function("sp_entity_set_material_index", &sp_entity_set_material_index);
     script_engine.state->set_function("sp_entity_set_position", &sp_entity_set_position);
     script_engine.state->set_function("sp_entity_set_scale", &sp_entity_set_scale);

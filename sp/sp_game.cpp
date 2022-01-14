@@ -46,7 +46,7 @@ void sp_game_init(HWND hwnd)
     sp_scene_push_material(&game_state.our_scene, mat_info);
 
     sp_entity_init(&game_state.helmet_entity, "helmet");
-    sp_script_engine_load_script(&game_state.helmet_entity, "data/scripts/helmet.lua");
+    sp_script_engine_load_script(&game_state.helmet_entity, "lua/helmet.lua");
     sp_scene_push_entity(&game_state.our_scene, game_state.helmet_entity);
 
     sp_debug_camera_init(&game_state.cam);

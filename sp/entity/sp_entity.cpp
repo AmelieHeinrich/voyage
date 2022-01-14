@@ -33,6 +33,21 @@ void sp_entity_load_audio(sp_entity* entity, const char* path)
     sp_audio_clip_load_wav(&entity->audio_clip, path);
 }
 
+void sp_entity_play_audio(sp_entity* entity)
+{
+    sp_audio_clip_play(&entity->audio_clip);
+}
+
+void sp_entity_stop_audio(sp_entity* entity)
+{
+    sp_audio_clip_stop(&entity->audio_clip);
+}
+
+void sp_entity_loop_audio(sp_entity* entity, bool loop)
+{
+    sp_audio_clip_loop(&entity->audio_clip, loop);
+}
+
 void sp_entity_set_material_index(sp_entity* entity, i32 material_index)
 {
     entity->material_index = material_index;
