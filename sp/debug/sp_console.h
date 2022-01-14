@@ -6,7 +6,6 @@
 #include "../sp_common.h"
 
 #include <imgui/imgui.h>
-#include <noclip/noclip.h>
 
 typedef void(*sp_dev_console_fn)(std::vector<std::string>);
 
@@ -25,5 +24,5 @@ extern sp_dev_console global_console;
 
 void sp_dev_console_init();
 void sp_dev_console_shutdown();
-void sp_dev_console_draw(bool* open);
+void sp_dev_console_draw(bool* open, bool* focused);
 void sp_dev_console_add_log(const char* fmt, ...);

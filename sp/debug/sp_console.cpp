@@ -68,7 +68,7 @@ void sp_dev_console_shutdown()
 		free(history);
 }
 
-void sp_dev_console_draw(bool* open)
+void sp_dev_console_draw(bool* open, bool* focused)
 {
 	ImGui::SetNextWindowSize(ImVec2(520, 600), ImGuiCond_FirstUseEver);
 	if (!ImGui::Begin("Developper Console", open))
@@ -76,6 +76,8 @@ void sp_dev_console_draw(bool* open)
 		ImGui::End();
 		return;
 	}
+	
+	*focused = ImGui::IsWindowFocused();
 	
 	ImGui::Separator();
 	
@@ -143,6 +145,10 @@ void sp_dev_console_draw(bool* open)
 				command->second(args);
 				
 				global_console.scroll_to_bottom = true;
+			}
+			else
+			{
+				sp_dev_console_add_log("Unknown command: %s", args[0].c_str());
 			}
 		}
 		
