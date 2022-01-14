@@ -69,7 +69,7 @@ sp_log_crit("Critical lua error");\
 void sp_script_engine_load_script(sp_entity* entity, const char* path)
 {
     entity->scripted = 1;
-    sp_log_info("Loading script %s", path);
+    sp_log_info("[INFO] Loading script %s", path);
 	
     sol::load_result load_result = script_engine.state->load_file(path);
     if (!load_result.valid())

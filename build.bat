@@ -5,7 +5,7 @@ if not exist build (
     mkdir build
 )
 
-set debug=false
+set debug=true
 
 if %debug%==true (
     echo Compiling in debug mode.
@@ -26,14 +26,14 @@ if %debug%==true (
 )
 
 set output=game
-set flags=-nologo -FC -Zi -WX -W4 -incremental:no  /MP
-set disabledWarnings=-wd4100 -wd4201 -wd4018 -wd4099 -wd4189 -wd4505 -wd4530 -wd4840 -wd4324 -wd4459 -wd4702 -wd4244 -wd4310 -wd4611
-set source= %rootDir%/third_party/sol/*.c %rootDir%/sp/*.cpp %rootDir%/sp/video/*.cpp %rootDir%/sp/material/*.cpp %rootDir%/sp/player/*.cpp %rootDir%/sp/audio/*.cpp %rootDir%/sp/script/*.cpp %rootDir%/sp/entity/*.cpp
+set flags=-nologo -FC -Zi -WX -W4 /MP
+set disabledWarnings=-wd4100 -wd4201 -wd4018 -wd4099 -wd4189 -wd4505 -wd4530 -wd4840 -wd4324 -wd4459 -wd4702 -wd4244 -wd4310 -wd4611 -wd4996
+set source= %rootDir%/third_party/sol/*.c %rootDir%/third_party/imgui/*.cpp %rootDir%/sp/*.cpp %rootDir%/sp/video/*.cpp %rootDir%/sp/material/*.cpp %rootDir%/sp/player/*.cpp %rootDir%/sp/audio/*.cpp %rootDir%/sp/script/*.cpp %rootDir%/sp/entity/*.cpp %rootDir%/sp/debug/*.cpp
 set links=user32.lib d3d11.lib d3dcompiler.lib dxgi.lib assimp-vc143-mtd.lib
 set includeDirs= -I%rootDir%/third_party
 
 pushd build
-cl %disabledWarnings% %includeDirs% %debugFlags% %flags% -Fe%output% %source% /std:c++latest %links% %entryPoint% %link_path%
+cl %disabledWarnings% %includeDirs% %debugFlags% %flags% -Fe%output% %source% /std:c++latest /incremental %links% %entryPoint% %link_path%
 popd
 
 echo.

@@ -4,6 +4,8 @@
 #include <stdarg.h>
 #include <assert.h>
 
+#include "debug/sp_console.h"
+
 #define LOG_BUF_SIZE 1024
 
 #define LOG_RESET   "\033[0m"
@@ -30,6 +32,8 @@ void sp_console_output(const char* col, const char* msg)
     printf(col);
     printf("%s\n", msg);
     printf(LOG_RESET);
+	
+	sp_dev_console_add_log("%s", msg);
 }
 
 void sp_log_info(const char* fmt, ...)
@@ -37,11 +41,11 @@ void sp_log_info(const char* fmt, ...)
     char buf[LOG_BUF_SIZE];    
     va_list vl;
     va_start(vl, fmt);
-
+	
     vsnprintf(buf, sizeof(buf), fmt, vl);
-
+	
     va_end(vl);
-
+	
     sp_console_output(LOG_CYAN, buf);
 }
 
@@ -50,11 +54,11 @@ void sp_log_warn(const char* fmt, ...)
     char buf[LOG_BUF_SIZE];    
     va_list vl;
     va_start(vl, fmt);
-
+	
     vsnprintf(buf, sizeof(buf), fmt, vl);
-
+	
     va_end(vl);
-
+	
     sp_console_output(LOG_YELLOW, buf);
 }
 
@@ -63,9 +67,9 @@ void sp_log_err(const char* fmt, ...)
     char buf[LOG_BUF_SIZE];    
     va_list vl;
     va_start(vl, fmt);
-
+	
     vsnprintf(buf, sizeof(buf), fmt, vl);
-
+	
     va_end(vl);
     
     sp_console_output(LOG_RED, buf);
@@ -76,11 +80,11 @@ void sp_log_crit(const char* fmt, ...)
     char buf[LOG_BUF_SIZE];    
     va_list vl;
     va_start(vl, fmt);
-
+	
     vsnprintf(buf, sizeof(buf), fmt, vl);
-
+	
     va_end(vl);
-
+	
     sp_console_output(LOG_RED, buf);
     assert(false && buf);
 }

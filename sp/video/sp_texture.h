@@ -30,18 +30,18 @@ struct sp_sampler
 
 struct sp_texture
 {
-    ID3D11Texture2D* texture;
-    ID3D11Texture2D* depth_texture;
+    ID3D11Texture2D* texture = nullptr;
+    ID3D11Texture2D* depth_texture = nullptr;
     
     DXGI_FORMAT format;
     DXGI_FORMAT depth_format;
     i32 width, height;
-
+	
     //
-    ID3D11RenderTargetView* rtv;
-    ID3D11DepthStencilView* dsv;
-    ID3D11ShaderResourceView* srv;
-    ID3D11UnorderedAccessView* uav;
+    ID3D11RenderTargetView* rtv = nullptr;
+    ID3D11DepthStencilView* dsv = nullptr;
+    ID3D11ShaderResourceView* srv = nullptr;
+    ID3D11UnorderedAccessView* uav = nullptr;
 };
 
 void sp_sampler_init(sp_sampler* sampler, sp_texture_address address);

@@ -64,7 +64,6 @@ sp_mesh sp_process_mesh(sp_model* mod, aiMesh* mesh, const aiScene* scene)
         {
             std::string tex_path = mod->directory + '/' + str.C_Str();
             sp_texture_load(&out.albedo_texture, tex_path.c_str());
-            sp_texture_init_srv(&out.albedo_texture);
         }
     }
     // Metallic Roughness
@@ -75,7 +74,6 @@ sp_mesh sp_process_mesh(sp_model* mod, aiMesh* mesh, const aiScene* scene)
         {
             std::string tex_path = mod->directory + '/' + str.C_Str();
             sp_texture_load(&out.metallic_roughness_texture, tex_path.c_str());
-            sp_texture_init_srv(&out.metallic_roughness_texture);
         }
     }
     // Normal
@@ -86,7 +84,6 @@ sp_mesh sp_process_mesh(sp_model* mod, aiMesh* mesh, const aiScene* scene)
         {
             std::string tex_path = mod->directory + '/' + str.C_Str();
             sp_texture_load(&out.normal_texture, tex_path.c_str());
-            sp_texture_init_srv(&out.normal_texture);
         }
     }
 

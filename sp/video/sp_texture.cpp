@@ -60,6 +60,8 @@ void sp_sampler_bind(sp_sampler* sampler, i32 binding, sp_uniform_bind bind)
 
 void sp_texture_init(sp_texture* tex, i32 width, i32 height, DXGI_FORMAT format, u32 bind)
 {
+    memset(tex, 0, sizeof(tex));
+
     tex->width = width;
     tex->height = height;
     tex->format = format;
@@ -107,6 +109,8 @@ void sp_texture_load(sp_texture* tex, const char* path)
     HRESULT res = sp_video_data.device->CreateTexture2D(&desc, &subresource, &tex->texture);
     if (FAILED(res))
         sp_log_crit("Failed to create D3D11 image");
+
+    sp_texture_init_srv(tex);
 
     stbi_image_free(buf);
 }
