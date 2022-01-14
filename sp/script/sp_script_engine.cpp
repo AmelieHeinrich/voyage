@@ -15,14 +15,14 @@ void sp_script_engine_init()
 {
     script_engine.state = new sol::state();
     script_engine.state->open_libraries(sol::lib::base, sol::lib::math, sol::lib::string);
-
+	
     lua_State* L = script_engine.state->lua_state();
     L->l_G->panic = [](lua_State* L)
     {
         sp_log_crit("Script engine panic");
         return 0;
     };
-
+	
     lua_atpanic(L, sp_lua_panic);
 }
 
@@ -39,7 +39,7 @@ void sp_script_engine_register()
     entity["id"] = &sp_entity::id;
     entity["volume"] = &sp_entity::volume;
     entity["material_index"] = &sp_entity::material_index;
-
+	
     script_engine.state->set_function("sp_entity_load_mesh", &sp_entity_load_mesh);
     script_engine.state->set_function("sp_entity_load_audio", &sp_entity_load_audio);
     script_engine.state->set_function("sp_entity_play_audio", &sp_entity_play_audio);
@@ -49,7 +49,7 @@ void sp_script_engine_register()
     script_engine.state->set_function("sp_entity_set_position", &sp_entity_set_position);
     script_engine.state->set_function("sp_entity_set_scale", &sp_entity_set_scale);
     script_engine.state->set_function("sp_entity_set_rotation", &sp_entity_set_rotation);
-
+	
     script_engine.state->set_function("sp_key_pressed", &sp_key_pressed);
     script_engine.state->set_function("sp_mouse_pressed", &sp_mouse_pressed);
     script_engine.state->set_function("sp_get_mouse_x", &sp_get_mouse_x);
@@ -57,20 +57,20 @@ void sp_script_engine_register()
 }
 
 #define LUA_CALL(Namespace, Function, ...) \
-	if (setjmp(script_engine.panic_jump) == 0)\
-	{\
-		lua[Namespace][Function](__VA_ARGS__);\
-	}\
-	else\
-	{\
-		sp_log_crit("Critical lua error");\
-	}
+if (setjmp(script_engine.panic_jump) == 0)\
+{\
+lua[Namespace][Function](__VA_ARGS__);\
+}\
+else\
+{\
+sp_log_crit("Critical lua error");\
+}
 
 void sp_script_engine_load_script(sp_entity* entity, const char* path)
 {
     entity->scripted = 1;
     sp_log_info("Loading script %s", path);
-
+	
     sol::load_result load_result = script_engine.state->load_file(path);
     if (!load_result.valid())
     {

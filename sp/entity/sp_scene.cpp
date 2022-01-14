@@ -56,13 +56,13 @@ void sp_scene_on_update(sp_scene* scene)
     for (auto entity = scene->entities.begin(); entity != scene->entities.end(); ++entity)
     {
         entity->second.transform = glm::translate(glm::mat4(1.0f), entity->second.position) 
-                                * glm::scale(glm::mat4(1.0f), entity->second.scale)
-                                * glm::rotate(glm::mat4(1.0f), glm::radians(entity->second.rotation.x), glm::vec3(1.0f, 0.0f, 0.0f))
-                                * glm::rotate(glm::mat4(1.0f), glm::radians(entity->second.rotation.y), glm::vec3(0.0f, 1.0f, 0.0f))
-                                * glm::rotate(glm::mat4(1.0f), glm::radians(entity->second.rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
-
+			* glm::scale(glm::mat4(1.0f), entity->second.scale)
+			* glm::rotate(glm::mat4(1.0f), glm::radians(entity->second.rotation.x), glm::vec3(1.0f, 0.0f, 0.0f))
+			* glm::rotate(glm::mat4(1.0f), glm::radians(entity->second.rotation.y), glm::vec3(0.0f, 1.0f, 0.0f))
+			* glm::rotate(glm::mat4(1.0f), glm::radians(entity->second.rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
+		
         sp_buffer_set_data(&entity->second.gpu_transform, &entity->second.transform);
-
+		
         if (entity->second.scripted)
             sp_script_engine_update_entity(&entity->second);
     }
