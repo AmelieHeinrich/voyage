@@ -5,7 +5,7 @@ if not exist build (
     mkdir build
 )
 
-set debug=false
+set debug=true
 
 if %debug%==true (
     echo Compiling in debug mode.

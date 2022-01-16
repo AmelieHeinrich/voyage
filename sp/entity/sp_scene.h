@@ -8,10 +8,11 @@ struct sp_scene
 {
     std::unordered_map<u32, sp_entity> entities;
     std::unordered_map<u32, sp_material> materials;
-
+	
     struct {
         glm::mat4 projection;
         glm::mat4 view;
+		glm::vec4 camera_position;
     } scene_camera;
     sp_buffer camera_buffer;
 };

@@ -95,10 +95,13 @@ void sp_game_update()
 	
     game_state->our_scene.scene_camera.projection = game_state->cam.projection;
     game_state->our_scene.scene_camera.view = game_state->cam.view;
+	game_state->our_scene.scene_camera.camera_position = glm::vec4(game_state->cam.position, 1.0f);
 	
+	sp_texture_reset_srv(0, sp_uniform_bind::pixel);
     sp_scene_on_update(&game_state->our_scene);
     sp_render_flow_update(&game_state->render_flow, &game_state->our_scene);
 	
+	sp_texture_reset_srv(0, sp_uniform_bind::pixel);
 	sp_gui_begin();
 	sp_dev_console_draw(&game_state->open_console, &game_state->console_focused);
 	sp_showpos();

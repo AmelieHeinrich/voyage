@@ -49,13 +49,21 @@ void sp_sampler_free(sp_sampler* sampler);
 void sp_sampler_bind(sp_sampler* sampler, i32 binding, sp_uniform_bind bind);
 
 void sp_texture_init(sp_texture* tex, i32 width, i32 height, DXGI_FORMAT format, u32 bind);
+void sp_texture_init_cube(sp_texture* tex, i32 width, i32 height, DXGI_FORMAT format, u32 bind);
 void sp_texture_load(sp_texture* tex, const char* path);
+void sp_texture_load_float(sp_texture* tex, const char* path);
 void sp_texture_free(sp_texture* tex);
 void sp_texture_init_rtv(sp_texture* tex);
 void sp_texture_init_dsv(sp_texture* tex, DXGI_FORMAT depth_format);
 void sp_texture_init_srv(sp_texture* tex);
+void sp_texture_init_srv_cube(sp_texture* tex);
 void sp_texture_init_uav(sp_texture* tex);
+void sp_texture_init_uav_cube(sp_texture* tex);
 
 void sp_texture_bind_rtv(sp_texture* tex, glm::vec4 clear_color);
 void sp_texture_bind_srv(sp_texture* tex, i32 binding, sp_uniform_bind bind);
 void sp_texture_bind_uav(sp_texture* tex, i32 binding);
+
+void sp_texture_reset_rtv();
+void sp_texture_reset_uav(i32 binding);
+void sp_texture_reset_srv(i32 binding, sp_uniform_bind bind);

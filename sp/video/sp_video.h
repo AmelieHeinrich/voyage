@@ -9,14 +9,14 @@ struct sp_video
 {
     HWND hwnd;
     u32 width, height;
-
+	
     IDXGIAdapter* adapter;
     IDXGIFactory* factory;
     IDXGIDevice* dxgi;
     ID3D11Device* device;
     ID3D11DeviceContext* device_ctx;
     D3D_FEATURE_LEVEL level;
-
+	
     IDXGISwapChain* swap_chain;
     ID3D11Texture2D* swap_chain_buffer;
     ID3D11RenderTargetView* swap_chain_rtv;
@@ -31,3 +31,4 @@ void sp_video_present(bool vsync);
 void sp_video_shutdown();
 void sp_video_draw(i32 count, i32 start);
 void sp_video_draw_indexed(i32 count, i32 start);
+void sp_video_dispatch(u32 x, u32 y, u32 z);

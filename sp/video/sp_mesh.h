@@ -10,6 +10,8 @@ struct sp_vertex
     glm::vec3 position;
     glm::vec3 normal;
     glm::vec2 uv;
+	glm::vec3 tangent;
+	glm::vec3 bitangent;
 };
 
 struct sp_mesh
@@ -18,7 +20,7 @@ struct sp_mesh
     sp_buffer index_buffer;
     i32 vertex_count;
     i32 index_count;
-
+	
     sp_texture albedo_texture;
     sp_texture metallic_roughness_texture;
     sp_texture normal_texture;

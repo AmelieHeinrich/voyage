@@ -10,51 +10,59 @@
 sp_mesh sp_process_mesh(sp_model* mod, aiMesh* mesh, const aiScene* scene)
 {
     sp_mesh out;
-
+	
     std::vector<sp_vertex> vertices;
     std::vector<u32> indices;
-
+	
     for (u32 i = 0; i < mesh->mNumVertices; i++)
     {
         sp_vertex vertex;
-
+		
         vertex.position.x = mesh->mVertices[i].x;
         vertex.position.y = mesh->mVertices[i].y;
         vertex.position.z = mesh->mVertices[i].z;
-
+		
         if (mesh->HasNormals())
         {
             vertex.normal.x = mesh->mNormals[i].x;
             vertex.normal.y = mesh->mNormals[i].y;
             vertex.normal.z = mesh->mNormals[i].z;
         }
-
+		
         if (mesh->mTextureCoords[0])
         {
             vertex.uv.x = mesh->mTextureCoords[0][i].x;
             vertex.uv.y = mesh->mTextureCoords[0][i].y;
+			
+			vertex.tangent.x = mesh->mTangents[i].x;
+			vertex.tangent.y = mesh->mTangents[i].y;
+			vertex.tangent.z = mesh->mTangents[i].z;
+			
+			vertex.bitangent.x = mesh->mBitangents[i].x;
+			vertex.bitangent.y = mesh->mBitangents[i].y;
+			vertex.bitangent.z = mesh->mBitangents[i].z;
         }
         else
             vertex.uv = glm::vec2(0.0f);
-
+		
         vertices.push_back(vertex);
     }
-
+	
     for (u32 i = 0; i < mesh->mNumFaces; i++)
     {
         aiFace face = mesh->mFaces[i];
         for (u32 j = 0; j < face.mNumIndices; j++)
             indices.push_back(face.mIndices[j]);
     }
-
+	
     sp_buffer_create(&out.vertex_buffer, vertices.size() * sizeof(sp_vertex), sizeof(sp_vertex), sp_buffer_usage::vertex);
     sp_buffer_set_data(&out.vertex_buffer, vertices.data());
     sp_buffer_create(&out.index_buffer, indices.size() * sizeof(u32), 0, sp_buffer_usage::index);
     sp_buffer_set_data(&out.index_buffer, indices.data());
-
+	
     out.vertex_count = (i32)vertices.size();
     out.index_count = (i32)indices.size();
-
+	
     aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
     // Albedo
     {
@@ -86,7 +94,7 @@ sp_mesh sp_process_mesh(sp_model* mod, aiMesh* mesh, const aiScene* scene)
             sp_texture_load(&out.normal_texture, tex_path.c_str());
         }
     }
-
+	
     return out;
 }
 
@@ -106,7 +114,7 @@ void sp_process_node(sp_model* out, aiNode* node, const aiScene* scene)
 void sp_model_load(sp_model* mod, const std::string& path)
 {
     Assimp::Importer importer;
-    const aiScene* scene = importer.ReadFile(path, aiProcess_FlipWindingOrder | aiProcess_FlipUVs);
+    const aiScene* scene = importer.ReadFile(path, aiProcess_FlipWindingOrder | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
     {
         sp_log_err("Failed to load model with path %s", path.c_str());

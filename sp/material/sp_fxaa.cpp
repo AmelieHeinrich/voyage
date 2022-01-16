@@ -11,7 +11,7 @@ void sp_fxaa_init(sp_fxaa* fxaa)
     sp_texture_init_rtv(&fxaa->fxaa_texture);
     sp_texture_init_srv(&fxaa->fxaa_texture);
     sp_buffer_create(&fxaa->fxaa_parameters, sizeof(fxaa->fxaa_parameters), 0, sp_buffer_usage::uniform);
-
+	
     sp_material_info mat_info{};
     mat_info.ccw = false;
     mat_info.cull_mode = sp_cull_mode::none;
@@ -19,7 +19,7 @@ void sp_fxaa_init(sp_fxaa* fxaa)
     mat_info.fill_mode = sp_fill_mode::fill;
     sp_material_create(&fxaa->fxaa_material, mat_info);
     sp_sampler_init(&fxaa->fxaa_sampler, sp_texture_address::wrap);
-
+	
     fxaa->params.fxaa_enabled = true;
     fxaa->params.rcp_frame = glm::vec2(1.0f / sp_video_data.width, 1.0f / sp_video_data.height);    
 }
@@ -34,9 +34,12 @@ void sp_fxaa_free(sp_fxaa* fxaa)
 
 void sp_fxaa_update(sp_fxaa* fxaa, sp_texture* in_texture)
 {
+	sp_texture_reset_rtv();
+	sp_texture_reset_srv(0, sp_uniform_bind::pixel);
+	
     sp_buffer_set_data(&fxaa->fxaa_parameters, &fxaa->params);
     sp_video_data.device_ctx->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-
+	
     sp_shader_bind(&fxaa->fxaa_shader);
     sp_material_bind(&fxaa->fxaa_material);
     sp_sampler_bind(&fxaa->fxaa_sampler, 0, sp_uniform_bind::pixel);

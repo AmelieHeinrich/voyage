@@ -95,7 +95,7 @@ void sp_dev_console_draw(bool* open, bool* focused)
 	{
 		ImVec4 color = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
 		if (strstr(item, "[ERROR]")) color = ImVec4(1.0f, 0.4f, 0.4f, 1.0f);
-		if (strstr(item, "[WARN]")) color = ImVec4(0.4f, 1.0f, 1.0f, 1.0f);
+		if (strstr(item, "[WARN]")) color = ImVec4(0.0f, 1.0f, 1.0f, 1.0f);
 		if (strstr(item, "[INFO]")) color = ImVec4(0.4f, 0.4f, 1.0f, 1.0f);
 		
 		ImGui::PushStyleColor(ImGuiCol_Text, color);

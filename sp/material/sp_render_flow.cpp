@@ -7,6 +7,7 @@
 void sp_render_flow_init(sp_render_flow* flow, HWND hwnd)
 {
     sp_forward_init(&flow->forward);
+	sp_env_map_init(&flow->map, "data/env/Street_Low.hdr");
     sp_fxaa_init(&flow->fxaa);
 	
 	if (platform_data.enable_gui)
@@ -19,6 +20,7 @@ void sp_render_flow_free(sp_render_flow* flow)
 		sp_gui_free();
 	
     sp_fxaa_free(&flow->fxaa);
+	sp_env_map_free(&flow->map);
     sp_forward_free(&flow->forward);
 }
 
@@ -31,7 +33,8 @@ void sp_render_flow_update(sp_render_flow* flow, sp_scene* scene)
     viewport.MaxDepth = 1.0f;
     sp_video_data.device_ctx->RSSetViewports(1, &viewport);
 	
-    sp_forward_update(&flow->forward, scene);
+    sp_forward_update(&flow->forward, scene, &flow->map);
+	sp_env_map_update(&flow->map, scene);
     sp_fxaa_update(&flow->fxaa, &flow->forward.rtv);
 }
 

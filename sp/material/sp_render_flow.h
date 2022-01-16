@@ -2,11 +2,13 @@
 
 #include "sp_forward.h"
 #include "sp_fxaa.h"
+#include "sp_env_map.h"
 #include "../entity/sp_scene.h"
 
 struct sp_render_flow
 {
     sp_forward forward;
+	sp_env_map map;
     sp_fxaa fxaa;
 };
 
