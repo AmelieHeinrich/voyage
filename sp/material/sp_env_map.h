@@ -48,4 +48,4 @@ struct sp_env_map
 void sp_env_map_init(sp_env_map* map, const char* path);
 void sp_env_map_free(sp_env_map* map);
 void sp_env_map_update(sp_env_map* map, sp_scene* scene);
-void sp_env_map_restart(sp_env_map* map, char* path);
+void sp_env_map_restart(sp_env_map* map, char* path); 

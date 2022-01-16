@@ -8,8 +8,9 @@
 #include "sp_game.h"
 #include "sp_platform.h"
 
+// TODO(milo): load config from file?
 #define GAME_WINDOW_CLASS_NAME "GameWindowClass"
-#define GAME_WINDOW_TITLE "Game"
+#define GAME_WINDOW_TITLE "Voyage"
 #define GAME_DEFAULT_WIDTH 1280
 #define GAME_DEFAULT_HEIGHT 720
 
@@ -53,6 +54,7 @@ LRESULT CALLBACK wnd_proc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 		}
 		
 		case WM_DPICHANGED: {
+			// NOTE(milo): lol fuck imgui viewports ngl
 			if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_DpiEnableScaleViewports)
 			{
 				const RECT* suggested_rect = (RECT*)lparam;

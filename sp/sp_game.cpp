@@ -35,6 +35,8 @@ void sp_game_init(HWND hwnd)
 	platform_data.vsync = 1;
 	game_state->open_console = 0;
 	game_state->console_focused = 0;
+	game_state->enable_skybox = 1;
+	game_state->enable_fxaa = 1;
 	
     sp_timer_init();
     sp_audio_init();
@@ -42,10 +44,14 @@ void sp_game_init(HWND hwnd)
 	sp_dev_console_init();
     sp_script_engine_init();
     sp_script_engine_register();
-    sp_scene_init(&game_state->our_scene);
+    sp_scene_init(&game_state->current_scene);
     sp_render_flow_init(&game_state->render_flow, hwnd);
 	
-	global_console.cmds["showpos"] = sp_enable_showpos;
+	global_console.cmds["sp_showpos"] = sp_enable_showpos;
+	global_console.cmds["mat_toggle_fxaa"] = sp_enable_fxaa;
+	global_console.cmds["mat_toggle_env"] = sp_enable_skybox;
+	global_console.cmds["mat_render_mode"] = sp_set_render_mode;
+	global_console.cmds["mat_wireframe"] = sp_set_wireframe;
 	
     //
     sp_material_info mat_info{};
@@ -53,24 +59,25 @@ void sp_game_init(HWND hwnd)
     mat_info.cull_mode = sp_cull_mode::back;
     mat_info.fill_mode = sp_fill_mode::fill;
     mat_info.depth_op = sp_comp_op::less;
-    sp_scene_push_material(&game_state->our_scene, mat_info);
+	mat_info.name = "DefaultMeshMaterial";
+    sp_scene_push_material(&game_state->current_scene, mat_info);
 	
     sp_entity_init(&game_state->helmet_entity, "helmet");
     sp_script_engine_load_script(&game_state->helmet_entity, "lua/helmet.lua");
-    sp_scene_push_entity(&game_state->our_scene, game_state->helmet_entity);
+    sp_scene_push_entity(&game_state->current_scene, game_state->helmet_entity);
 	
     sp_debug_camera_init(&game_state->cam);
 	
-    sp_scene_on_init(&game_state->our_scene);
+    sp_scene_on_init(&game_state->current_scene);
 	
     sp_log_info("[INFO] Initialised game");
 }
 
 void sp_game_shutdown()
 {
-    sp_scene_on_free(&game_state->our_scene);
+    sp_scene_on_free(&game_state->current_scene);
 	
-    sp_scene_free(&game_state->our_scene);
+    sp_scene_free(&game_state->current_scene);
     sp_render_flow_free(&game_state->render_flow);
     sp_script_engine_free();
 	sp_dev_console_shutdown();
@@ -93,13 +100,13 @@ void sp_game_update()
     f32 dt = time - game_state->last_frame;
     game_state->last_frame = time;
 	
-    game_state->our_scene.scene_camera.projection = game_state->cam.projection;
-    game_state->our_scene.scene_camera.view = game_state->cam.view;
-	game_state->our_scene.scene_camera.camera_position = glm::vec4(game_state->cam.position, 1.0f);
+    game_state->current_scene.scene_camera.projection = game_state->cam.projection;
+    game_state->current_scene.scene_camera.view = game_state->cam.view;
+	game_state->current_scene.scene_camera.camera_position = glm::vec4(game_state->cam.position, 1.0f);
 	
 	sp_texture_reset_srv(0, sp_uniform_bind::pixel);
-    sp_scene_on_update(&game_state->our_scene);
-    sp_render_flow_update(&game_state->render_flow, &game_state->our_scene);
+    sp_scene_on_update(&game_state->current_scene);
+    sp_render_flow_update(&game_state->render_flow, &game_state->current_scene);
 	
 	sp_texture_reset_srv(0, sp_uniform_bind::pixel);
 	sp_gui_begin();

@@ -4,6 +4,7 @@
 #include "../video/sp_video.h"
 
 #include "../sp_log.h"
+#include "../sp_timer.h"
 
 const float skybox_vertices[] = {
 	-1.0f,  1.0f, -1.0f,
@@ -51,6 +52,8 @@ const float skybox_vertices[] = {
 
 void sp_env_map_init(sp_env_map* map, const char* path)
 {
+	// TODO (milo): make the compute execution time faster
+	
 	map->path = (char*)path;
 	sp_log_info("[INFO] Loading environment map from path %s", path);
 	
@@ -95,6 +98,7 @@ void sp_env_map_init(sp_env_map* map, const char* path)
 	sp_buffer_set_data(&map->cube_map_buffer, (void*)skybox_vertices);
 	
 	// COMPUTE 
+	f32 start = sp_timer_get();
 	
 	// Equi to cubemap
 	sp_texture_reset_srv(0, sp_uniform_bind::compute);
@@ -156,6 +160,10 @@ void sp_env_map_init(sp_env_map* map, const char* path)
 	sp_video_dispatch(512 / 32, 512 / 32, 1);
 	
 	sp_texture_reset_uav(0);
+	//
+	
+	f32 end = sp_timer_get();
+	sp_log_info("[INFO] Environment map compute took %f seconds", end - start);
 	//
 }
 

@@ -35,8 +35,10 @@ void sp_forward_update(sp_forward* forward, sp_scene* scene, sp_env_map* map)
 	
     sp_texture_bind_rtv(&forward->rtv, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
     sp_shader_bind(&forward->forward_shader);
+	
     sp_sampler_bind(&forward->texture_sampler, 0, sp_uniform_bind::pixel);
     sp_buffer_bind_cb(&scene->camera_buffer, 1, sp_uniform_bind::vertex);
+	sp_buffer_bind_cb(&scene->scene_render_buffer, 2, sp_uniform_bind::pixel);
 	
 	sp_texture_bind_srv(&map->irradiance_map, 3, sp_uniform_bind::pixel);
 	sp_texture_bind_srv(&map->prefilter_map, 4, sp_uniform_bind::pixel);
@@ -45,7 +47,11 @@ void sp_forward_update(sp_forward* forward, sp_scene* scene, sp_env_map* map)
     for (auto scene_entity : scene->entities)
     {
         sp_entity entity = scene_entity.second;
-        sp_material_bind(&scene->materials[entity.material_index]);
+        if (scene->scene_render.force_wireframe)
+			sp_material_bind(&scene->wireframe_material);
+		else
+			sp_material_bind(&scene->materials[entity.material_name]);
+		
         sp_buffer_bind_cb(&entity.gpu_transform, 0, sp_uniform_bind::vertex);
         for (i32 j = 0; j < entity.render_model.meshes.size(); j++)
         {

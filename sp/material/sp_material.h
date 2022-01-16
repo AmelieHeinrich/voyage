@@ -1,19 +1,20 @@
 #pragma once
 
 #include <d3d11.h>
+#include <string>
 #include "../sp_common.h"
 
 enum class sp_fill_mode
 {
-    fill,
-    line
+    fill = D3D11_FILL_SOLID,
+    line = D3D11_FILL_WIREFRAME
 };
 
 enum class sp_cull_mode
 {
-    front,
-    back,
-    none
+	none = D3D11_CULL_NONE,
+	front = D3D11_CULL_FRONT,
+    back = D3D11_CULL_BACK
 };
 
 enum class sp_comp_op
@@ -34,6 +35,7 @@ struct sp_material_info
     sp_cull_mode cull_mode;
     sp_comp_op depth_op;
     bool ccw;
+	std::string name;
 };
 
 struct sp_material
@@ -41,7 +43,7 @@ struct sp_material
     ID3D11RasterizerState* rs_state;
     ID3D11DepthStencilState* ds_state;
     sp_material_info mat_info;
-    u32 id;
+	std::string name;
 };
 
 void sp_material_create(sp_material* mat, sp_material_info mat_info);

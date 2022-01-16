@@ -5,6 +5,7 @@
 #include "sp_buffer.h"
 #include "sp_texture.h"
 
+// TODO(milo): get rid of the bi/tangents 
 struct sp_vertex
 {
     glm::vec3 position;

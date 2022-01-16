@@ -7,6 +7,7 @@
 
 #include "../sp_log.h"
 
+// NOTE(milo): LEARNOPENG KEKW
 sp_mesh sp_process_mesh(sp_model* mod, aiMesh* mesh, const aiScene* scene)
 {
     sp_mesh out;
@@ -64,6 +65,9 @@ sp_mesh sp_process_mesh(sp_model* mod, aiMesh* mesh, const aiScene* scene)
     out.index_count = (i32)indices.size();
 	
     aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+	
+	// TODO(milo): have a 1x1 white texture if the mesh loader can't find any textures for the mesh
+	
     // Albedo
     {
         aiString str;

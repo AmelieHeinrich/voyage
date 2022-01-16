@@ -32,3 +32,4 @@ void sp_buffer_set_data(sp_buffer* buffer, void* data);
 void sp_buffer_bind_vb(sp_buffer* buffer);
 void sp_buffer_bind_ib(sp_buffer* buffer);
 void sp_buffer_bind_cb(sp_buffer* buffer, i32 binding, sp_uniform_bind bind);
+// TODO(milo): probably sp_buffer_bind_uav? idk i don't have a use for it yet

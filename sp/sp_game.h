@@ -9,7 +9,7 @@
 
 struct sp_game_state
 {
-    sp_scene our_scene;
+    sp_scene current_scene;
     sp_render_flow render_flow;
     sp_debug_camera cam;
     sp_entity helmet_entity;
@@ -17,6 +17,8 @@ struct sp_game_state
 	bool open_console;
 	bool game_focus;
 	bool console_focused;
+	bool enable_skybox;
+	bool enable_fxaa;
     f32 last_frame;
 };
 

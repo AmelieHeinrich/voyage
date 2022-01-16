@@ -136,21 +136,21 @@ void sp_dev_console_draw(bool* open, bool* focused)
 			}
 		}
 		
+		bool found_command = false;
 		for (auto command = global_console.cmds.begin(); command != global_console.cmds.end(); ++command)
 		{
 			if (args[0] == command->first)
 			{
 				global_console.history.push_back(Strdup(command->first));
+				found_command = true;
 				
 				command->second(args);
 				
 				global_console.scroll_to_bottom = true;
 			}
-			else
-			{
-				sp_dev_console_add_log("Unknown command: %s", args[0].c_str());
-			}
 		}
+		if (!found_command)
+			sp_dev_console_add_log("Unknown command: %s", args[0].c_str());
 		
 		strcpy(s, "");
 		reclaim_focus = true;

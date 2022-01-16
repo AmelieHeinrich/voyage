@@ -11,7 +11,7 @@ void sp_entity_init(sp_entity* out, const char* name)
     out->scale = glm::vec3(1.0f);
     out->rotation = glm::vec3(0.0f);
     out->scripted = 0;
-
+	
     sp_buffer_create(&out->gpu_transform, sizeof(glm::mat4), 0, sp_buffer_usage::uniform);
 }
 
@@ -48,9 +48,9 @@ void sp_entity_loop_audio(sp_entity* entity, bool loop)
     sp_audio_clip_loop(&entity->audio_clip, loop);
 }
 
-void sp_entity_set_material_index(sp_entity* entity, i32 material_index)
+void sp_entity_set_material_name(sp_entity* entity, std::string material_name)
 {
-    entity->material_index = material_index;
+    entity->material_name = std::string(material_name);
 }
 
 void sp_entity_set_position(sp_entity* entity, f32 x, f32 y, f32 z)

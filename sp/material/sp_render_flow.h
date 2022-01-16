@@ -7,8 +7,12 @@
 
 struct sp_render_flow
 {
-    sp_forward forward;
+	// TODO(milo): shadowmapping
+	// TODO(milo): light culling
+    sp_forward forward; // TODO(milo): forward+
 	sp_env_map map;
+	// TODO(milo): bloom
+	// TODO(milo): tonemapping
     sp_fxaa fxaa;
 };
 
