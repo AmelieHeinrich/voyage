@@ -2,9 +2,16 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 #include "../script/sp_script_engine.h"
+#include "../debug/sp_cvar.h"
+
+sp_cvar* render_mode;
+sp_cvar* wireframe;
 
 void sp_scene_init(sp_scene* scene)
 {
+	render_mode = cvar_registry.get("mat_render_mode");
+	wireframe = cvar_registry.get("mat_wireframe");
+	
     scene->scene_camera.view = glm::mat4(1.0f);
     scene->scene_camera.projection = glm::mat4(1.0f);
     sp_buffer_create(&scene->camera_buffer, sizeof(scene->scene_camera), 0, sp_buffer_usage::uniform);
@@ -65,6 +72,9 @@ void sp_scene_on_init(sp_scene* scene)
 
 void sp_scene_on_update(sp_scene* scene)
 {
+	scene->scene_render.render_mode = render_mode->as.i;
+	scene->scene_render.force_wireframe = render_mode->as.i;
+	
     sp_buffer_set_data(&scene->camera_buffer, &scene->scene_camera);
 	sp_buffer_set_data(&scene->scene_render_buffer, &scene->scene_render);
 	

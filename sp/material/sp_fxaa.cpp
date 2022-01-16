@@ -3,9 +3,14 @@
 #include "../video/sp_video.h"
 #include "sp_render_flow.h"
 #include "../sp_input.h"
+#include "../debug/sp_cvar.h"
+
+sp_cvar* fxaa_enabled;
 
 void sp_fxaa_init(sp_fxaa* fxaa)
 {
+	fxaa_enabled = cvar_registry.get("mat_toggle_fxaa");
+	
     sp_shader_init(&fxaa->fxaa_shader, "data/shaders/fxaa/fxaa_vs.hlsl", "data/shaders/fxaa/fxaa_ps.hlsl");
     sp_texture_init(&fxaa->fxaa_texture, sp_video_data.width, sp_video_data.height, DXGI_FORMAT_R8G8B8A8_UNORM, sp_texture_bind::rtv | sp_texture_bind::srv);
     sp_texture_init_rtv(&fxaa->fxaa_texture);
@@ -34,6 +39,8 @@ void sp_fxaa_free(sp_fxaa* fxaa)
 
 void sp_fxaa_update(sp_fxaa* fxaa, sp_texture* in_texture)
 {
+	fxaa->params.fxaa_enabled = fxaa_enabled->as.i;
+	
 	sp_texture_reset_rtv();
 	sp_texture_reset_srv(0, sp_uniform_bind::pixel);
 	

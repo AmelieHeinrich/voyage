@@ -4,9 +4,14 @@
 #include "sp_gui.h"
 #include "../sp_platform.h"
 #include "../sp_game.h"
+#include "../debug/sp_cvar.h"
+
+sp_cvar* skybox;
 
 void sp_render_flow_init(sp_render_flow* flow, HWND hwnd)
 {
+	skybox = cvar_registry.get("mat_toggle_env");
+	
     sp_forward_init(&flow->forward);
 	sp_env_map_init(&flow->map, "data/env/Street_High.hdr");
     sp_fxaa_init(&flow->fxaa);
@@ -35,9 +40,8 @@ void sp_render_flow_update(sp_render_flow* flow, sp_scene* scene)
     sp_video_data.device_ctx->RSSetViewports(1, &viewport);
 	
     sp_forward_update(&flow->forward, scene, &flow->map);
-	if (sp_get_game_state()->enable_skybox)
+	if (skybox->as.i)
 		sp_env_map_update(&flow->map, scene);
-	flow->fxaa.params.fxaa_enabled = sp_get_game_state()->enable_fxaa;
     sp_fxaa_update(&flow->fxaa, &flow->forward.rtv);
 }
 

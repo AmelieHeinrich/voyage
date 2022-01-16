@@ -11,6 +11,7 @@
 #include "audio/sp_audio.h"
 #include "script/sp_script_engine.h"
 #include "debug/sp_console.h"
+#include "debug/sp_cvar.h"
 #include "sp_log.h"
 #include "sp_timer.h"
 #include "sp_platform.h"
@@ -35,9 +36,8 @@ void sp_game_init(HWND hwnd)
 	platform_data.vsync = 1;
 	game_state->open_console = 0;
 	game_state->console_focused = 0;
-	game_state->enable_skybox = 1;
-	game_state->enable_fxaa = 1;
 	
+	sp_init_cvar_registry();
     sp_timer_init();
     sp_audio_init();
     sp_video_init(hwnd);
@@ -46,12 +46,7 @@ void sp_game_init(HWND hwnd)
     sp_script_engine_register();
     sp_scene_init(&game_state->current_scene);
     sp_render_flow_init(&game_state->render_flow, hwnd);
-	
-	global_console.cmds["sp_showpos"] = sp_enable_showpos;
-	global_console.cmds["mat_toggle_fxaa"] = sp_enable_fxaa;
-	global_console.cmds["mat_toggle_env"] = sp_enable_skybox;
-	global_console.cmds["mat_render_mode"] = sp_set_render_mode;
-	global_console.cmds["mat_wireframe"] = sp_set_wireframe;
+	sp_init_game_gui();
 	
     //
     sp_material_info mat_info{};
@@ -83,6 +78,7 @@ void sp_game_shutdown()
 	sp_dev_console_shutdown();
     sp_video_shutdown();
     sp_audio_free();
+	sp_free_cvar_registry();
 	
 	sp_log_info("[INFO] Terminated game");
 	

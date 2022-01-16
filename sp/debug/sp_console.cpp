@@ -5,6 +5,8 @@
 #include <sstream>
 #include <string>
 
+#include "sp_cvar.h"
+
 static int   Stricmp(const char* s1, const char* s2)         { int d; while ((d = toupper(*s2) - toupper(*s1)) == 0 && *s1) { s1++; s2++; } return d; }
 static int   Strnicmp(const char* s1, const char* s2, int n) { int d = 0; while (n > 0 && (d = toupper(*s2) - toupper(*s1)) == 0 && *s1) { s1++; s2++; n--; } return d; }
 static char* Strdup(const char* s)                           { IM_ASSERT(s); size_t len = strlen(s) + 1; void* buf = malloc(len); IM_ASSERT(buf); return (char*)memcpy(buf, (const void*)s, len); }
@@ -136,22 +138,39 @@ void sp_dev_console_draw(bool* open, bool* focused)
 			}
 		}
 		
-		bool found_command = false;
-		for (auto command = global_console.cmds.begin(); command != global_console.cmds.end(); ++command)
+		bool should_find_command = true;
+		for (auto cvar = cvar_registry.cvars.begin(); cvar != cvar_registry.cvars.end(); ++cvar)
 		{
-			if (args[0] == command->first)
+			if (args[0] == cvar->first)
 			{
-				global_console.history.push_back(Strdup(command->first));
-				found_command = true;
-				
-				command->second(args);
-				
-				global_console.scroll_to_bottom = true;
+				if (cvar->second.type == sp_cvar_type::cvar_int)
+					cvar_registry.set_i(args[0], std::stoi(args[1]));
+				if (cvar->second.type == sp_cvar_type::cvar_float)
+					cvar_registry.set_f(args[0], std::stof(args[1]));
+				if (cvar->second.type == sp_cvar_type::cvar_string)
+					cvar_registry.set_s(args[0], args[1]);
+				should_find_command = false;
 			}
 		}
-		if (!found_command)
-			sp_dev_console_add_log("Unknown command: %s", args[0].c_str());
 		
+		if (should_find_command)
+		{
+			bool found_command = false;
+			for (auto command = global_console.cmds.begin(); command != global_console.cmds.end(); ++command)
+			{
+				if (args[0] == command->first)
+				{
+					global_console.history.push_back(Strdup(command->first));
+					found_command = true;
+					
+					command->second(args);
+				}
+			}
+			if (!found_command)
+				sp_dev_console_add_log("Unknown command: %s", args[0].c_str());
+		}
+		
+		global_console.scroll_to_bottom = true;
 		strcpy(s, "");
 		reclaim_focus = true;
 	}

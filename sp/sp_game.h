@@ -17,8 +17,6 @@ struct sp_game_state
 	bool open_console;
 	bool game_focus;
 	bool console_focused;
-	bool enable_skybox;
-	bool enable_fxaa;
     f32 last_frame;
 };
 

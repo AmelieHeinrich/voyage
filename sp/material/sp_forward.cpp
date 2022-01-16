@@ -1,9 +1,14 @@
 #include "sp_forward.h"
 
 #include "../video/sp_video.h"
+#include "../debug/sp_cvar.h"
+
+sp_cvar* scene_wireframe;
 
 void sp_forward_init(sp_forward* forward)
 {
+	scene_wireframe = cvar_registry.get("mat_wireframe");
+	
     sp_texture_init(&forward->rtv, sp_video_data.width, sp_video_data.height, DXGI_FORMAT_R16G16B16A16_FLOAT, sp_texture_bind::rtv | sp_texture_bind::srv);
     sp_texture_init_rtv(&forward->rtv);
     sp_texture_init_srv(&forward->rtv);
@@ -47,7 +52,7 @@ void sp_forward_update(sp_forward* forward, sp_scene* scene, sp_env_map* map)
     for (auto scene_entity : scene->entities)
     {
         sp_entity entity = scene_entity.second;
-        if (scene->scene_render.force_wireframe)
+        if (scene_wireframe->as.i)
 			sp_material_bind(&scene->wireframe_material);
 		else
 			sp_material_bind(&scene->materials[entity.material_name]);

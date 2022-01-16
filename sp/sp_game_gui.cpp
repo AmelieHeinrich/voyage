@@ -3,38 +3,14 @@
 #include "sp_game.h"
 #include "sp_log.h"
 #include "debug/sp_console.h"
+#include "debug/sp_cvar.h"
 #include <imgui/imgui.h>
 
-bool show_pos = false;
+sp_cvar* showpos;
 
-void sp_enable_showpos(std::vector<std::string> args)
+void sp_init_game_gui()
 {
-	show_pos = !show_pos;
-}
-
-void sp_enable_skybox(std::vector<std::string> args)
-{
-	sp_get_game_state()->enable_skybox = !sp_get_game_state()->enable_skybox;
-}
-
-void sp_enable_fxaa(std::vector<std::string> args)
-{
-	sp_get_game_state()->enable_fxaa = !sp_get_game_state()->enable_fxaa;
-}
-
-void sp_set_render_mode(std::vector<std::string> args)
-{
-	int mode = std::stoi(args[1]);
-	if (mode < 0 || mode > 7)
-		return;
-	
-	sp_get_game_state()->current_scene.scene_render.render_mode = mode;
-}
-
-void sp_set_wireframe(std::vector<std::string> args)
-{
-	int wireframe = std::stoi(args[1]);
-	sp_get_game_state()->current_scene.scene_render.force_wireframe = (bool)wireframe;
+	showpos = cvar_registry.get("sp_showpos");
 }
 
 void sp_showpos()
@@ -42,7 +18,7 @@ void sp_showpos()
 	static int corner = 0;
 	static bool show = true;
 	
-	if (show_pos)
+	if (showpos->as.i)
 	{
 		sp_game_state* state = sp_get_game_state();
 		
