@@ -59,7 +59,11 @@ void sp_game_init(HWND hwnd)
 	
     sp_entity_init(&game_state->helmet_entity, "helmet");
     sp_script_engine_load_script(&game_state->helmet_entity, "lua/helmet.lua");
+	sp_entity_init(&game_state->light_sphere_entity, "light_sphere");
+	sp_script_engine_load_script(&game_state->light_sphere_entity, "lua/light_sphere.lua");
+	
     sp_scene_push_entity(&game_state->current_scene, game_state->helmet_entity);
+	sp_scene_push_entity(&game_state->current_scene, game_state->light_sphere_entity);
 	
     sp_debug_camera_init(&game_state->cam);
 	

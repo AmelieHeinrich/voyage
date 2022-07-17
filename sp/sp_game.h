@@ -12,7 +12,9 @@ struct sp_game_state
     sp_scene current_scene;
     sp_render_flow render_flow;
     sp_debug_camera cam;
+	
     sp_entity helmet_entity;
+	sp_entity light_sphere_entity;
 	
 	bool open_console;
 	bool game_focus;

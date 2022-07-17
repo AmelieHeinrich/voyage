@@ -3,6 +3,7 @@
 #include "sp_forward.h"
 #include "sp_fxaa.h"
 #include "sp_env_map.h"
+#include "sp_bloom.h"
 #include "../entity/sp_scene.h"
 
 struct sp_render_flow
@@ -11,7 +12,6 @@ struct sp_render_flow
 	// TODO(milo): light culling
     sp_forward forward; // TODO(milo): forward+
 	sp_env_map map;
-	// TODO(milo): bloom
 	// TODO(milo): tonemapping
     sp_fxaa fxaa;
 };

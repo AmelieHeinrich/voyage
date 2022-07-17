@@ -50,6 +50,8 @@ void sp_init_cvar_registry()
 	cvar_registry.add_i("mat_toggle_env", 1);
 	cvar_registry.add_i("mat_render_mode", 0);
 	cvar_registry.add_i("mat_wireframe", 0);
+	cvar_registry.add_i("mat_toggle_bloom", 1);
+	cvar_registry.add_f("mat_bloom_threshold", 0.7f);
 }
 
 void sp_free_cvar_registry()

@@ -38,7 +38,7 @@ void sp_script_engine_register()
     entity["name"] = &sp_entity::name;
     entity["id"] = &sp_entity::id;
     entity["volume"] = &sp_entity::volume;
-    entity["material_index"] = &sp_entity::material_name;
+    entity["material_name"] = &sp_entity::material_name;
 	
     script_engine.state->set_function("sp_entity_load_mesh", &sp_entity_load_mesh);
     script_engine.state->set_function("sp_entity_load_audio", &sp_entity_load_audio);
@@ -49,6 +49,8 @@ void sp_script_engine_register()
     script_engine.state->set_function("sp_entity_set_position", &sp_entity_set_position);
     script_engine.state->set_function("sp_entity_set_scale", &sp_entity_set_scale);
     script_engine.state->set_function("sp_entity_set_rotation", &sp_entity_set_rotation);
+	script_engine.state->set_function("sp_entity_set_light_source", &sp_entity_set_light_source);
+	script_engine.state->set_function("sp_entity_set_light_color", &sp_entity_set_light_color);
 	
     script_engine.state->set_function("sp_key_pressed", &sp_key_pressed);
     script_engine.state->set_function("sp_mouse_pressed", &sp_mouse_pressed);

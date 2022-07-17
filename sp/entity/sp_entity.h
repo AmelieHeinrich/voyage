@@ -20,6 +20,10 @@ struct sp_entity
     sp_model render_model;
 	std::string material_name;
 	
+	// Light
+	bool emits_light;
+	glm::vec3 light_color;
+	
     // Transform
     sp_buffer gpu_transform;
     glm::mat4 transform;
@@ -39,3 +43,5 @@ void sp_entity_set_material_name(sp_entity* entity, std::string material_name);
 void sp_entity_set_position(sp_entity* entity, f32 x, f32 y, f32 z);
 void sp_entity_set_scale(sp_entity* entity, f32 x, f32 y, f32 z);
 void sp_entity_set_rotation(sp_entity* entity, f32 x, f32 y, f32 z);
+void sp_entity_set_light_source(sp_entity* entity, bool light);
+void sp_entity_set_light_color(sp_entity* entity, f32 x, f32 y, f32 z);

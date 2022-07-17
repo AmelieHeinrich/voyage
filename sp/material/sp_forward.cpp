@@ -44,6 +44,7 @@ void sp_forward_update(sp_forward* forward, sp_scene* scene, sp_env_map* map)
     sp_sampler_bind(&forward->texture_sampler, 0, sp_uniform_bind::pixel);
     sp_buffer_bind_cb(&scene->camera_buffer, 1, sp_uniform_bind::vertex);
 	sp_buffer_bind_cb(&scene->scene_render_buffer, 2, sp_uniform_bind::pixel);
+	sp_buffer_bind_cb(&scene->scene_light_buffer, 3, sp_uniform_bind::pixel);
 	
 	sp_texture_bind_srv(&map->irradiance_map, 3, sp_uniform_bind::pixel);
 	sp_texture_bind_srv(&map->prefilter_map, 4, sp_uniform_bind::pixel);

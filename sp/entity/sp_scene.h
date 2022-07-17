@@ -5,6 +5,8 @@
 #include <unordered_map>
 #include <string>
 
+#define SP_MAX_SCENE_LIGHTS 128
+
 // TODO(milo): load scene from file
 
 struct sp_scene
@@ -27,6 +29,12 @@ struct sp_scene
 		glm::vec2 padding0;
 	} scene_render;
 	
+	struct {
+		glm::vec4 light_positions[SP_MAX_SCENE_LIGHTS];
+		glm::vec4 light_colors[SP_MAX_SCENE_LIGHTS];
+	} scene_lights;
+	
+	sp_buffer scene_light_buffer;
 	sp_buffer scene_render_buffer;
     sp_buffer camera_buffer;
 	sp_material wireframe_material;

@@ -1,12 +1,3 @@
 {
-    "C_Cpp.default.includePath": [
-        "third_party"
-    ],
-    "files.associations": {
-        "chrono": "cpp",
-        "format": "cpp",
-        "utility": "cpp",
-        "xhash": "cpp",
-        "list": "cpp"
-    }
+    "makefile.extensionOutputFolder": "./.vscode"
 }
