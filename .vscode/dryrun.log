@@ -1,6 +1,0 @@
-make.exe --dry-run --always-make --keep-going --print-directory
-make: Entering directory '/d/dev_important/voyage'
-make: Leaving directory '/d/dev_important/voyage'
- 
-make: *** No targets specified and no makefile found.  Stop.
-
