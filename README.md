@@ -1,5 +1,7 @@
 # Voyage
 
+## This game stopped development in January 2022.
+
 ## Dependencies
 - Assimp
 - dr_libs
