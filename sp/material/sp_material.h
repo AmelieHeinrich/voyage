@@ -12,8 +12,8 @@ enum class sp_fill_mode
 
 enum class sp_cull_mode
 {
-	none = D3D11_CULL_NONE,
-	front = D3D11_CULL_FRONT,
+    none = D3D11_CULL_NONE,
+    front = D3D11_CULL_FRONT,
     back = D3D11_CULL_BACK
 };
 
@@ -35,7 +35,7 @@ struct sp_material_info
     sp_cull_mode cull_mode;
     sp_comp_op depth_op;
     bool ccw;
-	std::string name;
+    std::string name;
 };
 
 struct sp_material
@@ -43,7 +43,7 @@ struct sp_material
     ID3D11RasterizerState* rs_state;
     ID3D11DepthStencilState* ds_state;
     sp_material_info mat_info;
-	std::string name;
+    std::string name;
 };
 
 void sp_material_create(sp_material* mat, sp_material_info mat_info);

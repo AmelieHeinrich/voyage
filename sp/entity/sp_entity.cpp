@@ -11,7 +11,7 @@ void sp_entity_init(sp_entity* out, const char* name)
     out->scale = glm::vec3(1.0f);
     out->rotation = glm::vec3(0.0f);
     out->scripted = 0;
-	
+    
     sp_buffer_create(&out->gpu_transform, sizeof(glm::mat4), 0, sp_buffer_usage::uniform);
 }
 
@@ -70,10 +70,10 @@ void sp_entity_set_rotation(sp_entity* entity, f32 x, f32 y, f32 z)
 
 void sp_entity_set_light_source(sp_entity* entity, bool light)
 {
-	entity->emits_light = light;
+    entity->emits_light = light;
 }
 
 void sp_entity_set_light_color(sp_entity* entity, f32 x, f32 y, f32 z)
 {
-	entity->light_color = glm::vec3(x, y, z);
+    entity->light_color = glm::vec3(x, y, z);
 }

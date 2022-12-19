@@ -36,7 +36,7 @@ struct sp_texture
     DXGI_FORMAT format;
     DXGI_FORMAT depth_format;
     i32 width, height;
-	
+    
     //
     ID3D11RenderTargetView* rtv = nullptr;
     ID3D11DepthStencilView* dsv = nullptr;

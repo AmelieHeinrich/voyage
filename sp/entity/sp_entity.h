@@ -11,19 +11,19 @@ struct sp_entity
     char* name;
     i32 id;
     bool scripted;
-	
+    
     // Audio
     sp_audio_clip audio_clip;
     f32 volume;
-	
+    
     // Render component
     sp_model render_model;
-	std::string material_name;
-	
-	// Light
-	bool emits_light;
-	glm::vec3 light_color;
-	
+    std::string material_name;
+    
+    // Light
+    bool emits_light;
+    glm::vec3 light_color;
+    
     // Transform
     sp_buffer gpu_transform;
     glm::mat4 transform;

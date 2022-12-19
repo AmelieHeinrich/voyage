@@ -8,13 +8,13 @@
 struct sp_audio_clip
 {
     ma_decoder decoder;
-	ma_decoder_config decoder_config;
+    ma_decoder_config decoder_config;
 
-	bool playing;
-	bool loop;
+    bool playing;
+    bool loop;
 
     i32 id;
-	drwav wav;
+    drwav wav;
 };
 
 void sp_audio_init();

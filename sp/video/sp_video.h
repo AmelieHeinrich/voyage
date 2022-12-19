@@ -9,14 +9,14 @@ struct sp_video
 {
     HWND hwnd;
     u32 width, height;
-	
+    
     IDXGIAdapter* adapter;
     IDXGIFactory* factory;
     IDXGIDevice* dxgi;
     ID3D11Device* device;
     ID3D11DeviceContext* device_ctx;
     D3D_FEATURE_LEVEL level;
-	
+    
     IDXGISwapChain* swap_chain;
     ID3D11Texture2D* swap_chain_buffer;
     ID3D11RenderTargetView* swap_chain_rtv;

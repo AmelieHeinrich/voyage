@@ -23,11 +23,11 @@ void sp_buffer_create(sp_buffer* buffer, i64 size, i64 stride, sp_buffer_usage u
     buffer->stride = stride;
 
     D3D11_BUFFER_DESC desc{};
-	desc.Usage = D3D11_USAGE_DEFAULT;
-	desc.ByteWidth = (UINT)size;
-	desc.BindFlags = sp_usage_to_d3d11(usage);
-	desc.CPUAccessFlags = 0;
-	desc.MiscFlags = 0; 
+    desc.Usage = D3D11_USAGE_DEFAULT;
+    desc.ByteWidth = (UINT)size;
+    desc.BindFlags = sp_usage_to_d3d11(usage);
+    desc.CPUAccessFlags = 0;
+    desc.MiscFlags = 0; 
 
     HRESULT res = sp_video_data.device->CreateBuffer(&desc, NULL, &buffer->buffer);
     if (FAILED(res))
@@ -47,7 +47,7 @@ void sp_buffer_set_data(sp_buffer* buffer, void* data)
 void sp_buffer_bind_vb(sp_buffer* buffer)
 {
     UINT stride = (UINT)buffer->stride;
-	UINT offset = 0;
+    UINT offset = 0;
     sp_video_data.device_ctx->IASetVertexBuffers(0, 1, &buffer->buffer, &stride, &offset);
 }
 

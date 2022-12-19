@@ -30,14 +30,14 @@ void sp_data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_
 {
     /* Assuming format is always s16 for now. */
     for (i32 i = 0; i < ctx.clip_count; i++) {
-		if (pDevice->playback.format == ma_format_s16) {
-       		drwav_read_pcm_frames_s16(&ctx.clips[i]->wav, frameCount, (drwav_int16*)pOutput);
-    	} else if (pDevice->playback.format == ma_format_f32) {
-    	    drwav_read_pcm_frames_f32(&ctx.clips[i]->wav, frameCount, (float*)pOutput);
-    	} else {
-    	    /* Unsupported format. */
-    	}
-	}
+        if (pDevice->playback.format == ma_format_s16) {
+               drwav_read_pcm_frames_s16(&ctx.clips[i]->wav, frameCount, (drwav_int16*)pOutput);
+        } else if (pDevice->playback.format == ma_format_f32) {
+            drwav_read_pcm_frames_f32(&ctx.clips[i]->wav, frameCount, (float*)pOutput);
+        } else {
+            /* Unsupported format. */
+        }
+    }
 
     (void)pInput;
 }
@@ -64,55 +64,55 @@ void sp_audio_free()
 void sp_audio_update()
 {
     for (u32 i = 0; i < ctx.clip_count; i++) {
-		sp_audio_clip* clip = ctx.clips[i];
+        sp_audio_clip* clip = ctx.clips[i];
 
-		if (!clip->playing) {
-			sp_audio_clip_stop(clip);
-			if (clip->loop) {
-				sp_audio_clip_play(clip);
-			}
-		}
-	}
+        if (!clip->playing) {
+            sp_audio_clip_stop(clip);
+            if (clip->loop) {
+                sp_audio_clip_play(clip);
+            }
+        }
+    }
 }
 
 void sp_audio_clip_load_wav(sp_audio_clip* clip, const char* path)
 {
-	drwav_init_file(&clip->wav, path, NULL);
+    drwav_init_file(&clip->wav, path, NULL);
 }
 
 void sp_audio_clip_free(sp_audio_clip* clip)
 {
     if (clip->playing) {
-		sp_audio_clip_stop(clip);
-	}
+        sp_audio_clip_stop(clip);
+    }
 
-	ma_decoder_uninit(&clip->decoder);
+    ma_decoder_uninit(&clip->decoder);
 
-	drwav_uninit(&clip->wav);
+    drwav_uninit(&clip->wav);
 }
 
 void sp_audio_clip_play(sp_audio_clip* clip)
 {
     for (u32 i = 0; i < ctx.clip_count; i++) {
-		if (ctx.clips[i] == clip) {
-			sp_audio_clip_stop(ctx.clips[i]);
-			break;
-		}
-	}
+        if (ctx.clips[i] == clip) {
+            sp_audio_clip_stop(ctx.clips[i]);
+            break;
+        }
+    }
 
-	ma_decoder_seek_to_pcm_frame(&clip->decoder, 0);
+    ma_decoder_seek_to_pcm_frame(&clip->decoder, 0);
 
-	clip->playing = true;
-	ctx.clips[ctx.clip_count] = clip;
-	clip->id = ctx.clip_count++;
+    clip->playing = true;
+    ctx.clips[ctx.clip_count] = clip;
+    clip->id = ctx.clip_count++;
 }
 
 void sp_audio_clip_stop(sp_audio_clip* clip)
 {   
     clip->playing = false;
 
-	ctx.clips[clip->id] = ctx.clips[ctx.clip_count - 1];
-	ctx.clips[clip->id]->id = clip->id;
+    ctx.clips[clip->id] = ctx.clips[ctx.clip_count - 1];
+    ctx.clips[clip->id]->id = clip->id;
     ctx.clip_count--;
 }
 
