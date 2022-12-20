@@ -109,6 +109,13 @@ void sp_game_update()
     
     sp_texture_reset_srv(0, sp_uniform_bind::pixel);
     sp_gui_begin();
+    ImGui::Begin("Perf counter");
+    ImGui::Text("Forward pass: %fms", game_state->render_flow.forward_time * 1000000.0f);
+    ImGui::Text("Environment map pass: %fms", game_state->render_flow.env_time * 1000000.0f);
+    ImGui::Text("FXAA pass: %fms", game_state->render_flow.fxaa_time * 1000000.0f);
+    ImGui::Text("Blit: %fms", game_state->render_flow.copy_time * 1000000.0f);
+    ImGui::Text("Total time: %fms", game_state->render_flow.total_time * 1000000.0f);
+    ImGui::End();
     sp_dev_console_draw(&game_state->open_console, &game_state->console_focused);
     sp_showpos();
     sp_gui_end();

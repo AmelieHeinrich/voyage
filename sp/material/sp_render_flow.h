@@ -14,6 +14,12 @@ struct sp_render_flow
     sp_env_map map;
     // TODO(milo): tonemapping
     sp_fxaa fxaa;
+
+    f32 forward_time;
+    f32 env_time;
+    f32 fxaa_time;
+    f32 copy_time;
+    f32 total_time;
 };
 
 void sp_render_flow_init(sp_render_flow* flow, HWND hwnd);
