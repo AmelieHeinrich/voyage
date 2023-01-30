@@ -1,6 +1,12 @@
 #include "sp_video.h"
 #include "../sp_log.h"
 
+extern "C" 
+{
+    __declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
+    __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
+}
+
 const D3D_DRIVER_TYPE driver_types[] =
 {
     D3D_DRIVER_TYPE_HARDWARE,
